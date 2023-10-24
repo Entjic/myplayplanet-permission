@@ -1,4 +1,4 @@
-package net.myplayplanet.permission.core;
+package net.myplayplanet.permission.core.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

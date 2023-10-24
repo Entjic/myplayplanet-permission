@@ -1,4 +1,4 @@
 package net.myplayplanet.permission.client.api;
 
-public interface ExampleMarkerInterface {
+public interface PermissionClientMarker {
 }

@@ -6,6 +6,7 @@ import lombok.*;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.Set;
 
 @Getter
@@ -14,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
+@Table(name = "roles")
 public class Role {
 
     @Id
@@ -21,10 +23,32 @@ public class Role {
 
     private Integer weight;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany
     private Set<Permission> granted;
 
-    @OneToMany(mappedBy = "role")
+    @OneToMany
     private Set<Permission> denied;
 
+    @Override
+    public String toString() {
+
+        final StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("Role [").append(id).append("]")
+                .append("\n")
+                .append("weight: ").append(weight)
+                .append("\n").append("GRANTED").append("\n");
+
+        for (Permission permission : granted) {
+            stringBuilder.append(permission.toString()).append("\n");
+        }
+
+        stringBuilder.append("DENIED").append("\n");
+
+        for (Permission permission : denied) {
+            stringBuilder.append(permission.toString()).append("\n");
+        }
+
+        return stringBuilder.toString();
+    }
 }

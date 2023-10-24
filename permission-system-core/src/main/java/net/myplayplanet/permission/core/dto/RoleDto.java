@@ -12,6 +12,7 @@ import java.util.Set;
 public class RoleDto {
 
     private Long key;
+    private Integer weight;
     private Set<PermissionDto> permissions;
 
 }

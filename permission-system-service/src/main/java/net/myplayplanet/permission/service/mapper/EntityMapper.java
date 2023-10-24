@@ -1,10 +1,91 @@
 package net.myplayplanet.permission.service.mapper;
 
+import net.myplayplanet.permission.core.dto.PermissionInfoDto;
+import net.myplayplanet.permission.core.dto.UserDto;
+import net.myplayplanet.permission.core.enums.PermissionValue;
+import net.myplayplanet.permission.core.dto.PermissionDto;
+import net.myplayplanet.permission.core.dto.RoleDto;
+import net.myplayplanet.permission.service.model.Permission;
+import net.myplayplanet.permission.service.model.Role;
+import net.myplayplanet.permission.service.model.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface EntityMapper {
 
-    Integer mapToId(ExampleEntity example);
+    @Mapping(source = "permissionDto.key", target = "uuid")
+    Permission permissionDtoToPermission(PermissionDto permissionDto);
 
+    Set<Permission> permissionDtosToPermissions(Set<PermissionDto> permissionDtoSet);
+
+    @Mapping(source = "permission.uuid", target = "key")
+    PermissionDto permissionToPermissionDto(Permission permission, PermissionValue permissionValue);
+
+    default RoleDto roleToRoleDto(Role role){
+        RoleDto roleDto = new RoleDto();
+        Set<PermissionDto> permissions = new HashSet<>();
+
+        for (Permission permission : role.getGranted()) {
+            permissions.add(permissionToPermissionDto(permission, PermissionValue.GRANTED));
+        }
+
+        for (Permission permission : role.getDenied()) {
+            permissions.add(permissionToPermissionDto(permission, PermissionValue.DENIED));
+        }
+
+        roleDto.setKey(role.getId());
+        roleDto.setWeight(role.getWeight());
+        roleDto.setPermissions(permissions);
+
+        return roleDto;
+    }
+
+    Set<RoleDto> rolesToRoleDtos(Set<Role> roles);
+
+    default Role roleDtoToRole(RoleDto roleDto){
+        final Set<Permission> grantedPermissions = new HashSet<>();
+        final Set<Permission> deniedPermissions = new HashSet<>();
+
+        for (PermissionDto permission : roleDto.getPermissions()) {
+            if(permission.getPermissionValue().equals(PermissionValue.GRANTED)){
+                grantedPermissions.add(this.permissionDtoToPermission(permission));
+            }
+            if(permission.getPermissionValue().equals(PermissionValue.DENIED)){
+                deniedPermissions.add(this.permissionDtoToPermission(permission));
+            }
+        }
+
+        return new Role(roleDto.getKey(), roleDto.getWeight(), grantedPermissions, deniedPermissions);
+    }
+
+    default UserDto userToUserDto(User user){
+        UserDto userDto = new UserDto();
+
+        userDto.setUuid(user.getUuid());
+        userDto.setRoles(this.rolesToRoleDtos(user.getRoles()));
+
+        Set<PermissionDto> permissions = new HashSet<>();
+
+        for (Permission permission : user.getGranted()) {
+            permissions.add(this.permissionToPermissionDto(permission, PermissionValue.GRANTED));
+        }
+
+        for (Permission permission : user.getDenied()) {
+            permissions.add(this.permissionToPermissionDto(permission, PermissionValue.DENIED));
+        }
+
+        userDto.setExplicitPermissions(permissions);
+
+        return userDto;
+    }
+
+    Set<UserDto> usersToUserDtos(Set<User> users);
+
+    @Mapping(source = "permission.parent.uuid", target = "parent")
+    @Mapping(source = "permission.uuid", target = "key")
+    PermissionInfoDto permissionToPermissionInfoDto(Permission permission);
 }

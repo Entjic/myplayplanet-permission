@@ -1,0 +1,1763 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/api/v1/permission/user/role/remove/{roleId}/user/{uuid}": {
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "removeRole",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/user/role/add/{roleId}/user/{uuid}": {
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "addRole",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/update/": {
+      "post": {
+        "tags": [
+          "permission-controller"
+        ],
+        "summary": "Update an existing permission.",
+        "description": "This endpoint is used to update an already existing permission.",
+        "operationId": "updatePermission",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PermissionInfoDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Permission updated successfully.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionInfoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The referenced parent does not exist.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusException"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/save/": {
+      "post": {
+        "tags": [
+          "permission-controller"
+        ],
+        "summary": "Create a new permission.",
+        "description": "This endpoint is used to create a new permission.",
+        "operationId": "createPermission",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PermissionInfoDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Permission created successfully.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionInfoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The referenced parent does not exist.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusException"
+                }
+              }
+            }
+          },
+          "407": {
+            "description": "The ID is not unique.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusException"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/role/{id}/weight/{weight}": {
+      "post": {
+        "tags": [
+          "role-controller"
+        ],
+        "operationId": "changeWeight",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "weight",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/role/{id}/permission/{uuid}/{value}": {
+      "post": {
+        "tags": [
+          "role-controller"
+        ],
+        "operationId": "addPermission",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "value",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "NEUTRAL",
+                "GRANTED",
+                "DENIED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/role/create": {
+      "post": {
+        "tags": [
+          "role-controller"
+        ],
+        "operationId": "createRole",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoleDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/user/effective/{uuid}": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "getEffectiveUserModelDto",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/EffectiveUserModelDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/user/effective/extensive/{uuid}": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "getExtensiveEffectiveUserModelDto",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtensiveEffectiveUserModelDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/user/all/": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "getAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "uniqueItems": true,
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/role/all/": {
+      "get": {
+        "tags": [
+          "role-controller"
+        ],
+        "operationId": "getAllRoleIds",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "uniqueItems": true,
+                  "type": "array",
+                  "items": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/has/{user}/permission/{permission}": {
+      "get": {
+        "tags": [
+          "permission-controller"
+        ],
+        "summary": "Check if user has permission.",
+        "description": "This endpoint checks if a specified user has a certain permission.",
+        "operationId": "hasPermission",
+        "parameters": [
+          {
+            "name": "user",
+            "in": "path",
+            "description": "The UUID of the user",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "permission",
+            "in": "path",
+            "description": "The UUID of the permission",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/all/": {
+      "get": {
+        "tags": [
+          "permission-controller"
+        ],
+        "operationId": "getAll_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "uniqueItems": true,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/role/delete/{id}": {
+      "delete": {
+        "tags": [
+          "role-controller"
+        ],
+        "operationId": "deleteRole",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/permission/delete/{uuid}/mode/{mode}": {
+      "delete": {
+        "tags": [
+          "permission-controller"
+        ],
+        "summary": "Delete permission.",
+        "description": "This endpoint is used to delete a permission. There are 3 different modes: Shallow simply deletes the permission, at the risk of ripping a whole in the permission tree.Intelligent fixes that hole, by connecting all children of the deleted permission to the deleted permissions parent. Recursive also deletes all sub-permissions.",
+        "operationId": "deletePermission",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "The UUID of the permission",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "mode",
+            "in": "path",
+            "description": "The mode used for deleting the permission.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "SHALLOW",
+                "INTELLIGENT",
+                "RECURSIVE"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Permission deleted successfully.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "uniqueItems": true,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The referenced permission does not exist.",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseStatusException"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PermissionDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "permissionValue": {
+            "type": "string",
+            "enum": [
+              "NEUTRAL",
+              "GRANTED",
+              "DENIED"
+            ]
+          }
+        }
+      },
+      "RoleDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "weight": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "permissions": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermissionDto"
+            }
+          }
+        }
+      },
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "roles": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleDto"
+            }
+          },
+          "explicitPermissions": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermissionDto"
+            }
+          }
+        }
+      },
+      "PermissionInfoDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "parent": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "ContentDisposition": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "filename": {
+            "type": "string"
+          },
+          "charset": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int64",
+            "deprecated": true
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time",
+            "deprecated": true
+          },
+          "modificationDate": {
+            "type": "string",
+            "format": "date-time",
+            "deprecated": true
+          },
+          "readDate": {
+            "type": "string",
+            "format": "date-time",
+            "deprecated": true
+          },
+          "attachment": {
+            "type": "boolean"
+          },
+          "inline": {
+            "type": "boolean"
+          },
+          "formData": {
+            "type": "boolean"
+          }
+        }
+      },
+      "HttpRange": {
+        "type": "object"
+      },
+      "MediaType": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "subtype": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "qualityValue": {
+            "type": "number",
+            "format": "double"
+          },
+          "wildcardType": {
+            "type": "boolean"
+          },
+          "wildcardSubtype": {
+            "type": "boolean"
+          },
+          "subtypeSuffix": {
+            "type": "string"
+          },
+          "charset": {
+            "type": "string"
+          },
+          "concrete": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ResponseStatusException": {
+        "type": "object",
+        "properties": {
+          "cause": {
+            "type": "object",
+            "properties": {
+              "stackTrace": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "classLoaderName": {
+                      "type": "string"
+                    },
+                    "moduleName": {
+                      "type": "string"
+                    },
+                    "moduleVersion": {
+                      "type": "string"
+                    },
+                    "methodName": {
+                      "type": "string"
+                    },
+                    "fileName": {
+                      "type": "string"
+                    },
+                    "lineNumber": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "nativeMethod": {
+                      "type": "boolean"
+                    },
+                    "className": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "message": {
+                "type": "string"
+              },
+              "suppressed": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "stackTrace": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "classLoaderName": {
+                            "type": "string"
+                          },
+                          "moduleName": {
+                            "type": "string"
+                          },
+                          "moduleVersion": {
+                            "type": "string"
+                          },
+                          "methodName": {
+                            "type": "string"
+                          },
+                          "fileName": {
+                            "type": "string"
+                          },
+                          "lineNumber": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "nativeMethod": {
+                            "type": "boolean"
+                          },
+                          "className": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "localizedMessage": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "localizedMessage": {
+                "type": "string"
+              }
+            }
+          },
+          "stackTrace": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "classLoaderName": {
+                  "type": "string"
+                },
+                "moduleName": {
+                  "type": "string"
+                },
+                "moduleVersion": {
+                  "type": "string"
+                },
+                "methodName": {
+                  "type": "string"
+                },
+                "fileName": {
+                  "type": "string"
+                },
+                "lineNumber": {
+                  "type": "integer",
+                  "format": "int32"
+                },
+                "nativeMethod": {
+                  "type": "boolean"
+                },
+                "className": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "100 CONTINUE",
+              "101 SWITCHING_PROTOCOLS",
+              "102 PROCESSING",
+              "103 CHECKPOINT",
+              "200 OK",
+              "201 CREATED",
+              "202 ACCEPTED",
+              "203 NON_AUTHORITATIVE_INFORMATION",
+              "204 NO_CONTENT",
+              "205 RESET_CONTENT",
+              "206 PARTIAL_CONTENT",
+              "207 MULTI_STATUS",
+              "208 ALREADY_REPORTED",
+              "226 IM_USED",
+              "300 MULTIPLE_CHOICES",
+              "301 MOVED_PERMANENTLY",
+              "302 FOUND",
+              "302 MOVED_TEMPORARILY",
+              "303 SEE_OTHER",
+              "304 NOT_MODIFIED",
+              "305 USE_PROXY",
+              "307 TEMPORARY_REDIRECT",
+              "308 PERMANENT_REDIRECT",
+              "400 BAD_REQUEST",
+              "401 UNAUTHORIZED",
+              "402 PAYMENT_REQUIRED",
+              "403 FORBIDDEN",
+              "404 NOT_FOUND",
+              "405 METHOD_NOT_ALLOWED",
+              "406 NOT_ACCEPTABLE",
+              "407 PROXY_AUTHENTICATION_REQUIRED",
+              "408 REQUEST_TIMEOUT",
+              "409 CONFLICT",
+              "410 GONE",
+              "411 LENGTH_REQUIRED",
+              "412 PRECONDITION_FAILED",
+              "413 PAYLOAD_TOO_LARGE",
+              "413 REQUEST_ENTITY_TOO_LARGE",
+              "414 URI_TOO_LONG",
+              "414 REQUEST_URI_TOO_LONG",
+              "415 UNSUPPORTED_MEDIA_TYPE",
+              "416 REQUESTED_RANGE_NOT_SATISFIABLE",
+              "417 EXPECTATION_FAILED",
+              "418 I_AM_A_TEAPOT",
+              "419 INSUFFICIENT_SPACE_ON_RESOURCE",
+              "420 METHOD_FAILURE",
+              "421 DESTINATION_LOCKED",
+              "422 UNPROCESSABLE_ENTITY",
+              "423 LOCKED",
+              "424 FAILED_DEPENDENCY",
+              "425 TOO_EARLY",
+              "426 UPGRADE_REQUIRED",
+              "428 PRECONDITION_REQUIRED",
+              "429 TOO_MANY_REQUESTS",
+              "431 REQUEST_HEADER_FIELDS_TOO_LARGE",
+              "451 UNAVAILABLE_FOR_LEGAL_REASONS",
+              "500 INTERNAL_SERVER_ERROR",
+              "501 NOT_IMPLEMENTED",
+              "502 BAD_GATEWAY",
+              "503 SERVICE_UNAVAILABLE",
+              "504 GATEWAY_TIMEOUT",
+              "505 HTTP_VERSION_NOT_SUPPORTED",
+              "506 VARIANT_ALSO_NEGOTIATES",
+              "507 INSUFFICIENT_STORAGE",
+              "508 LOOP_DETECTED",
+              "509 BANDWIDTH_LIMIT_EXCEEDED",
+              "510 NOT_EXTENDED",
+              "511 NETWORK_AUTHENTICATION_REQUIRED"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "rawStatusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "responseHeaders": {
+            "type": "object",
+            "properties": {
+              "accessControlAllowCredentials": {
+                "type": "boolean"
+              },
+              "accessControlAllowHeaders": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "accessControlAllowMethods": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "GET",
+                    "HEAD",
+                    "POST",
+                    "PUT",
+                    "PATCH",
+                    "DELETE",
+                    "OPTIONS",
+                    "TRACE"
+                  ]
+                }
+              },
+              "accessControlAllowOrigin": {
+                "type": "string"
+              },
+              "accessControlExposeHeaders": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "accessControlRequestHeaders": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "accessControlRequestMethod": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "HEAD",
+                  "POST",
+                  "PUT",
+                  "PATCH",
+                  "DELETE",
+                  "OPTIONS",
+                  "TRACE"
+                ]
+              },
+              "cacheControl": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string",
+                "format": "uri"
+              },
+              "acceptCharset": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "acceptLanguage": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "range": {
+                      "type": "string"
+                    },
+                    "weight": {
+                      "type": "number",
+                      "format": "double"
+                    }
+                  }
+                }
+              },
+              "acceptLanguageAsLocales": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "script": {
+                      "type": "string"
+                    },
+                    "country": {
+                      "type": "string"
+                    },
+                    "variant": {
+                      "type": "string"
+                    },
+                    "unicodeLocaleAttributes": {
+                      "uniqueItems": true,
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "unicodeLocaleKeys": {
+                      "uniqueItems": true,
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "displayLanguage": {
+                      "type": "string"
+                    },
+                    "displayScript": {
+                      "type": "string"
+                    },
+                    "displayCountry": {
+                      "type": "string"
+                    },
+                    "displayVariant": {
+                      "type": "string"
+                    },
+                    "displayName": {
+                      "type": "string"
+                    },
+                    "extensionKeys": {
+                      "uniqueItems": true,
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "iso3Language": {
+                      "type": "string"
+                    },
+                    "iso3Country": {
+                      "type": "string"
+                    },
+                    "language": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "acceptPatch": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MediaType"
+                }
+              },
+              "accessControlMaxAge": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "basicAuth": {
+                "type": "string",
+                "writeOnly": true
+              },
+              "bearerAuth": {
+                "type": "string",
+                "writeOnly": true
+              },
+              "connection": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "contentDisposition": {
+                "$ref": "#/components/schemas/ContentDisposition"
+              },
+              "contentLanguage": {
+                "type": "object",
+                "properties": {
+                  "script": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "variant": {
+                    "type": "string"
+                  },
+                  "unicodeLocaleAttributes": {
+                    "uniqueItems": true,
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "unicodeLocaleKeys": {
+                    "uniqueItems": true,
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "displayLanguage": {
+                    "type": "string"
+                  },
+                  "displayScript": {
+                    "type": "string"
+                  },
+                  "displayCountry": {
+                    "type": "string"
+                  },
+                  "displayVariant": {
+                    "type": "string"
+                  },
+                  "displayName": {
+                    "type": "string"
+                  },
+                  "extensionKeys": {
+                    "uniqueItems": true,
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "iso3Language": {
+                    "type": "string"
+                  },
+                  "iso3Country": {
+                    "type": "string"
+                  },
+                  "language": {
+                    "type": "string"
+                  }
+                }
+              },
+              "ifNoneMatch": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "ifUnmodifiedSince": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "allow": {
+                "uniqueItems": true,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "GET",
+                    "HEAD",
+                    "POST",
+                    "PUT",
+                    "PATCH",
+                    "DELETE",
+                    "OPTIONS",
+                    "TRACE"
+                  ]
+                }
+              },
+              "host": {
+                "type": "object",
+                "properties": {
+                  "hostString": {
+                    "type": "string"
+                  },
+                  "address": {
+                    "type": "object",
+                    "properties": {
+                      "canonicalHostName": {
+                        "type": "string"
+                      },
+                      "anyLocalAddress": {
+                        "type": "boolean"
+                      },
+                      "linkLocalAddress": {
+                        "type": "boolean"
+                      },
+                      "multicastAddress": {
+                        "type": "boolean"
+                      },
+                      "loopbackAddress": {
+                        "type": "boolean"
+                      },
+                      "siteLocalAddress": {
+                        "type": "boolean"
+                      },
+                      "mcglobal": {
+                        "type": "boolean"
+                      },
+                      "mcnodeLocal": {
+                        "type": "boolean"
+                      },
+                      "mclinkLocal": {
+                        "type": "boolean"
+                      },
+                      "mcsiteLocal": {
+                        "type": "boolean"
+                      },
+                      "mcorgLocal": {
+                        "type": "boolean"
+                      },
+                      "hostAddress": {
+                        "type": "string"
+                      },
+                      "address": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "format": "byte"
+                        }
+                      },
+                      "hostName": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "port": {
+                    "type": "integer",
+                    "format": "int32"
+                  },
+                  "unresolved": {
+                    "type": "boolean"
+                  },
+                  "hostName": {
+                    "type": "string"
+                  }
+                }
+              },
+              "range": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/HttpRange"
+                }
+              },
+              "etag": {
+                "type": "string"
+              },
+              "accept": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MediaType"
+                }
+              },
+              "expires": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "ifMatch": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "origin": {
+                "type": "string"
+              },
+              "pragma": {
+                "type": "string"
+              },
+              "upgrade": {
+                "type": "string"
+              },
+              "vary": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "date": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "all": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "writeOnly": true
+              },
+              "lastModified": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "contentType": {
+                "$ref": "#/components/schemas/MediaType"
+              },
+              "contentLength": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "ifModifiedSince": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "empty": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "deprecated": true
+          },
+          "message": {
+            "type": "string"
+          },
+          "mostSpecificCause": {
+            "type": "object",
+            "properties": {
+              "stackTrace": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "classLoaderName": {
+                      "type": "string"
+                    },
+                    "moduleName": {
+                      "type": "string"
+                    },
+                    "moduleVersion": {
+                      "type": "string"
+                    },
+                    "methodName": {
+                      "type": "string"
+                    },
+                    "fileName": {
+                      "type": "string"
+                    },
+                    "lineNumber": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "nativeMethod": {
+                      "type": "boolean"
+                    },
+                    "className": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "message": {
+                "type": "string"
+              },
+              "suppressed": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "stackTrace": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "classLoaderName": {
+                            "type": "string"
+                          },
+                          "moduleName": {
+                            "type": "string"
+                          },
+                          "moduleVersion": {
+                            "type": "string"
+                          },
+                          "methodName": {
+                            "type": "string"
+                          },
+                          "fileName": {
+                            "type": "string"
+                          },
+                          "lineNumber": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "nativeMethod": {
+                            "type": "boolean"
+                          },
+                          "className": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "localizedMessage": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "localizedMessage": {
+                "type": "string"
+              }
+            }
+          },
+          "rootCause": {
+            "type": "object",
+            "properties": {
+              "cause": {
+                "type": "object",
+                "properties": {
+                  "stackTrace": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "classLoaderName": {
+                          "type": "string"
+                        },
+                        "moduleName": {
+                          "type": "string"
+                        },
+                        "moduleVersion": {
+                          "type": "string"
+                        },
+                        "methodName": {
+                          "type": "string"
+                        },
+                        "fileName": {
+                          "type": "string"
+                        },
+                        "lineNumber": {
+                          "type": "integer",
+                          "format": "int32"
+                        },
+                        "nativeMethod": {
+                          "type": "boolean"
+                        },
+                        "className": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "suppressed": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "stackTrace": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "classLoaderName": {
+                                "type": "string"
+                              },
+                              "moduleName": {
+                                "type": "string"
+                              },
+                              "moduleVersion": {
+                                "type": "string"
+                              },
+                              "methodName": {
+                                "type": "string"
+                              },
+                              "fileName": {
+                                "type": "string"
+                              },
+                              "lineNumber": {
+                                "type": "integer",
+                                "format": "int32"
+                              },
+                              "nativeMethod": {
+                                "type": "boolean"
+                              },
+                              "className": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "localizedMessage": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "localizedMessage": {
+                    "type": "string"
+                  }
+                }
+              },
+              "stackTrace": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "classLoaderName": {
+                      "type": "string"
+                    },
+                    "moduleName": {
+                      "type": "string"
+                    },
+                    "moduleVersion": {
+                      "type": "string"
+                    },
+                    "methodName": {
+                      "type": "string"
+                    },
+                    "fileName": {
+                      "type": "string"
+                    },
+                    "lineNumber": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "nativeMethod": {
+                      "type": "boolean"
+                    },
+                    "className": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "message": {
+                "type": "string"
+              },
+              "suppressed": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "stackTrace": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "classLoaderName": {
+                            "type": "string"
+                          },
+                          "moduleName": {
+                            "type": "string"
+                          },
+                          "moduleVersion": {
+                            "type": "string"
+                          },
+                          "methodName": {
+                            "type": "string"
+                          },
+                          "fileName": {
+                            "type": "string"
+                          },
+                          "lineNumber": {
+                            "type": "integer",
+                            "format": "int32"
+                          },
+                          "nativeMethod": {
+                            "type": "boolean"
+                          },
+                          "className": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "localizedMessage": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "localizedMessage": {
+                "type": "string"
+              }
+            }
+          },
+          "suppressed": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "stackTrace": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "classLoaderName": {
+                        "type": "string"
+                      },
+                      "moduleName": {
+                        "type": "string"
+                      },
+                      "moduleVersion": {
+                        "type": "string"
+                      },
+                      "methodName": {
+                        "type": "string"
+                      },
+                      "fileName": {
+                        "type": "string"
+                      },
+                      "lineNumber": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "nativeMethod": {
+                        "type": "boolean"
+                      },
+                      "className": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "message": {
+                  "type": "string"
+                },
+                "localizedMessage": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "localizedMessage": {
+            "type": "string"
+          }
+        }
+      },
+      "EffectiveUserModelDto": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "permissions": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PermissionDto"
+            }
+          }
+        }
+      },
+      "ExtensiveEffectiveUserModelDto": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "roles": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RoleDto"
+            }
+          },
+          "permissionDtos": {
+            "type": "array",
+            "properties": {
+              "empty": {
+                "type": "boolean"
+              }
+            },
+            "items": {
+              "$ref": "#/components/schemas/ExtensivePermissionDto"
+            }
+          }
+        }
+      },
+      "ExtensivePermissionDto": {
+        "type": "object",
+        "properties": {
+          "permissionDto": {
+            "$ref": "#/components/schemas/PermissionDto"
+          },
+          "permissionOrigin": {
+            "type": "string",
+            "enum": [
+              "SPECIFIC",
+              "ROLE"
+            ]
+          },
+          "roleDto": {
+            "$ref": "#/components/schemas/RoleDto"
+          }
+        }
+      }
+    }
+  }
+}

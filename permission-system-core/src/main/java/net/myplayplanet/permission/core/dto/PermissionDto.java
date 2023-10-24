@@ -3,13 +3,15 @@ package net.myplayplanet.permission.core.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import net.myplayplanet.permission.core.PermissionValue;
+import lombok.ToString;
+import net.myplayplanet.permission.core.enums.PermissionValue;
 
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class PermissionDto {
 
     private UUID key;

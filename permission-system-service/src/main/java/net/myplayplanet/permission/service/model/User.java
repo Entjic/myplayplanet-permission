@@ -2,10 +2,9 @@ package net.myplayplanet.permission.service.model;
 
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,18 +14,51 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
-    private UUID uuid;
+    @Column(name = "id")
+    @Type(type = "uuid-char")
+    private UUID uuid = UUID.randomUUID();
 
-    @OneToMany(mappedBy = "user")
-    private Set<Role> role;
+    @OneToMany
+    private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany
     private Set<Permission> granted;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany
     private Set<Permission> denied;
 
+    @Override
+    public String toString() {
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("User [").append(uuid).append("]")
+                .append("\n")
+                .append("ROLES")
+                .append("\n");
+
+        for (Role r : roles) {
+            stringBuilder.append(r.toString()).append("\n");
+        }
+
+        stringBuilder.append("USER SPECIFIC").append("\n");
+
+        stringBuilder.append("GRANTED").append("\n");
+
+        for (Permission permission : granted) {
+            stringBuilder.append(permission.toString()).append("\n");
+        }
+
+        stringBuilder.append("DENIED").append("\n");
+
+        for (Permission permission : denied) {
+            stringBuilder.append(permission.toString()).append("\n");
+        }
+
+        return stringBuilder.toString();
+    }
 }

@@ -10,11 +10,11 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+public class UserDto {
 
-public class ExtendedEffectiveUserModelDto {
-
-    private UUID user;
+    private UUID uuid;
     private Set<RoleDto> roles;
-    private Set<ExtensivePermissionDto> permissionDtos;
+
+    private Set<PermissionDto> explicitPermissions;
 
 }
