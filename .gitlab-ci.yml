@@ -1,0 +1,5 @@
+include:
+  - project: 'myplayplanet/projects/build_base'
+    ref: master
+    file:
+      - 'jdk-17-images-gitlab-ci.yml'
