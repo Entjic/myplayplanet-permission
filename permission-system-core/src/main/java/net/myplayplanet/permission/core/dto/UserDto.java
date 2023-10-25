@@ -14,7 +14,6 @@ public class UserDto {
 
     private UUID uuid;
     private Set<RoleDto> roles;
-
     private Set<PermissionDto> explicitPermissions;
 
 }

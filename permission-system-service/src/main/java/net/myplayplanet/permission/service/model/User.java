@@ -2,6 +2,7 @@ package net.myplayplanet.permission.service.model;
 
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -18,9 +19,16 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
+    @GenericGenerator(name = "native", strategy = "native")
+    private Long id;
+
+    @Column
     @Type(type = "uuid-char")
     private UUID uuid = UUID.randomUUID();
+
+    @ManyToOne
+    private Scope scope;
 
     @OneToMany
     private Set<Role> roles;

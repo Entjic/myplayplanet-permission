@@ -11,6 +11,7 @@ import net.myplayplanet.permission.core.dto.PermissionDto;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;
+import net.myplayplanet.permission.service.model.Scope;
 import net.myplayplanet.permission.service.repository.RoleRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,14 @@ public class RoleService {
         return roleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Set<Long> getAll(){
-        return this.roleRepository.findAll().stream().map(Role::getId).collect(Collectors.toSet());
+    public Collection<Role> getAll(){
+        return this.roleRepository.findAll();
+    }
+    public Set<Long> getAll(Scope scope){
+        return this.roleRepository.findAllByScope(scope)
+                .stream()
+                .map(Role::getId)
+                .collect(Collectors.toSet());
     }
 
     public Role save(Role role){

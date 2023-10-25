@@ -20,13 +20,11 @@ import java.util.UUID;
 public class Permission {
 
     @Id
-    @Column(name = "id")
     @Type(type = "uuid-char")
     private UUID uuid = UUID.randomUUID();
 
+    @Column
     private String name;
-
-    private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Permission parent;

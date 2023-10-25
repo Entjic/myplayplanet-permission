@@ -20,36 +20,39 @@ final class UserRestClient extends AbstractPermissionClient implements UserClien
     }
 
     @Override
-    public Mono<ExtensiveEffectiveUserModelDto> getExtensiveEffectiveUserModelDto(UUID uuid) {
+    public Mono<ExtensiveEffectiveUserModelDto>
+    getExtensiveEffectiveUserModelDto(Long scope,
+                                      UUID uuid) {
         return super.get(uriBuilder -> uriBuilder.path(super.base)
-                        .path("effective/extensive/{uuid}").build(uuid),
+                        .path("{scope}/effective/extensive/{uuid}/").build(scope, uuid),
                 ExtensiveEffectiveUserModelDto.class);
     }
 
     @Override
-    public Mono<EffectiveUserModelDto> getEffectiveUserModelDto(UUID uuid) {
+    public Mono<EffectiveUserModelDto> getEffectiveUserModelDto(Long scope, UUID uuid) {
         return super.get(uriBuilder -> uriBuilder.path(super.base)
-                .path("effective/{uuid}").build(uuid), EffectiveUserModelDto.class);
+                        .path("{scope}/effective/{uuid}/").build(scope, uuid),
+                EffectiveUserModelDto.class);
     }
 
     @Override
-    public Mono<UserDto> addRole(UUID uuid, Long roleId) {
+    public Mono<UserDto> addRole(Long scope, UUID uuid, Long roleId) {
         return super.post(uriBuilder -> uriBuilder.path(super.base)
-                .path("role/add/{roleId}/user/{uuid}")
-                .build(uuid, roleId),
+                        .path("{scope}/role/add/{roleId}/user/{uuid}/")
+                        .build(scope, uuid, roleId),
                 UserDto.class);
     }
 
     @Override
-    public Mono<UserDto> removeRole(UUID uuid, Long roleId) {
+    public Mono<UserDto> removeRole(Long scope, UUID uuid, Long roleId) {
         return super.post(uriBuilder -> uriBuilder.path(super.base)
-                .path("role/remove/{roleId}/user/{uuid}")
-                .build(uuid, roleId), UserDto.class);
+                .path("{scope}/role/remove/{roleId}/user/{uuid}/")
+                .build(scope, uuid, roleId), UserDto.class);
     }
 
     @Override
-    public Flux<UserDto> getAll() {
-        return super.getFlux(uriBuilder -> uriBuilder.path(super.base).path("all/")
-                .build(), UserDto.class);
+    public Flux<UserDto> getAll(Long scope) {
+        return super.getFlux(uriBuilder -> uriBuilder.path(super.base).path("{scope}/all/")
+                .build(scope), UserDto.class);
     }
 }

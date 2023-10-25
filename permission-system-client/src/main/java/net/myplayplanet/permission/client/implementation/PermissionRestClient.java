@@ -3,9 +3,10 @@ package net.myplayplanet.permission.client.implementation;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import net.myplayplanet.permission.client.api.PermissionClient;
+import net.myplayplanet.permission.core.dto.PermissionDisplayDto;
+import net.myplayplanet.permission.core.dto.PermissionInfoDto;
 import net.myplayplanet.permission.core.enums.DeletionMode;
 import net.myplayplanet.services.rest.base.client.crud.DebugLevel;
-import org.openapitools.client.model.PermissionInfoDto;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -34,18 +35,29 @@ final class PermissionRestClient extends AbstractPermissionClient implements Per
 
     @Override
     public Flux<UUID> deletePermission(UUID uuid, DeletionMode mode) {
-        return super.deleteFlux(uriBuilder -> uriBuilder.path(super.base).path("delete/{uuid}/mode/{mode}")
+        return super.deleteFlux(uriBuilder -> uriBuilder
+                .path(super.base).path("delete/{uuid}/mode/{mode}/")
                 .build(uuid, mode), UUID.class);
     }
 
     @Override
-    public Mono<Boolean> hasPermission(UUID user, UUID permission) {
-        return super.get(uriBuilder -> uriBuilder.path(super.base).path("has/{user}/permission/{permission}")
-                .build(user, permission), Boolean.class);
+    public Mono<Boolean> hasPermission(Long scope, UUID user, UUID permission) {
+        return super.get(uriBuilder -> uriBuilder.path(super.base)
+                .path("{scope}/has/{user}/permission/{permission}/")
+                .build(scope, user, permission), Boolean.class);
     }
 
     @Override
-    public Flux<UUID> getAll() {
-        return super.getFlux(uriBuilder -> uriBuilder.path(super.base).path("all/").build(), UUID.class);
+    public Flux<PermissionDisplayDto> getAll() {
+        return super.getFlux(uriBuilder -> uriBuilder.path(super.base)
+                .path("all/").build(), PermissionDisplayDto.class);
+    }
+
+    @Override
+    public Mono<PermissionDisplayDto> getById(UUID uuid) {
+        return super.get(uriBuilder -> uriBuilder.path(super.base)
+                .path("{id}/")
+                .build(),
+                PermissionDisplayDto.class);
     }
 }
