@@ -20,6 +20,9 @@
     <description>Lightweight and simple-to-use Permission-System.</description>
 
     <properties>
+
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+
         <version.myplayplanet-services>3.0.0-SNAPSHOT</version.myplayplanet-services>
         <version.mapstruct>1.5.3.Final</version.mapstruct>
         <version.myplayplanet-di>1.0.0-SNAPSHOT</version.myplayplanet-di>

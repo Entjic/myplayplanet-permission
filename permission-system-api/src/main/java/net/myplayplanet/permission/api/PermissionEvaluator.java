@@ -22,8 +22,8 @@ public class PermissionEvaluator {
     public Mono<Boolean> hasPermission(UUID user, UUID permission) {
         return permissionClient.hasPermission(this.scope, user, permission)
                 .onErrorResume(throwable -> {
-                    log.error("Error whilst checking if player has permission, " +
-                            "defaulting back to FALSE", throwable);
+                    log.error("Error whilst checking if user {} has permission {}, " +
+                            "defaulting back to FALSE", user, permission, throwable);
                     return Mono.just(Boolean.FALSE);
                 });
     }
