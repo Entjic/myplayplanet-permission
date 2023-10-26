@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -30,8 +31,8 @@ public class PermissionService {
         return this.permissionRepository.findById(uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Set<UUID> getAll(){
-        return this.permissionRepository.findAll().stream().map(Permission::getUuid).collect(Collectors.toSet());
+    public Collection<Permission> getAll(){
+        return this.permissionRepository.findAll();
     }
 
     public Boolean hasPermission(User user, Permission permission) {
@@ -59,18 +60,18 @@ public class PermissionService {
         return set;
     }
 
-    public Permission saveNewPermission(UUID uuid, String name, String description, UUID parent){
+    public Permission saveNewPermission(UUID uuid, String name, UUID parent){
         if(permissionRepository.existsById(uuid)) throw new ResponseStatusException(HttpStatus.CONFLICT, "There already exists a permission with the specified uuid");
-        return this.saveOrUpdatePermission(uuid, name, description, parent);
+        return this.saveOrUpdatePermission(uuid, name, parent);
     }
 
-    public Permission updateExistingPermission(UUID uuid, String name, String description, UUID parent){
+    public Permission updateExistingPermission(UUID uuid, String name, UUID parent){
         this.findPermissionOrThrow(uuid);
-        return this.saveOrUpdatePermission(uuid, name, description, parent);
+        return this.saveOrUpdatePermission(uuid, name, parent);
     }
 
-    private Permission saveOrUpdatePermission(UUID uuid, String name, String description, UUID parent) {
-        Permission permission = this.saveOrUpdatePermission(uuid, name, description);
+    private Permission saveOrUpdatePermission(UUID uuid, String name, UUID parent) {
+        Permission permission = this.saveOrUpdatePermission(uuid, name);
 
         if(parent == null) return permission;
 
@@ -80,16 +81,15 @@ public class PermissionService {
         return this.findPermissionOrThrow(uuid);
     }
 
-    private Permission saveOrUpdatePermission(UUID uuid, String name, String description) {
+    private Permission saveOrUpdatePermission(UUID uuid, String name) {
         if (permissionRepository.existsById(uuid)) {
             Permission permission = this.findPermissionOrThrow(uuid);
             Permission parent = permission.getParent();
             this.unlinkPermissions(parent, permission);
             permission.setName(name);
-            permission.setDescription(description);
             return permissionRepository.save(permission);
         }
-        Permission permission = new Permission(uuid, name, description, null, new HashSet<>());
+        Permission permission = new Permission(uuid, name, null, new HashSet<>());
         return permissionRepository.save(permission);
     }
 

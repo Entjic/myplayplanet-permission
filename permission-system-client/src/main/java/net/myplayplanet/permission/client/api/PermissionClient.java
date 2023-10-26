@@ -1,8 +1,9 @@
 package net.myplayplanet.permission.client.api;
 
+import net.myplayplanet.permission.core.dto.PermissionDisplayDto;
+import net.myplayplanet.permission.core.dto.PermissionDto;
+import net.myplayplanet.permission.core.dto.PermissionInfoDto;
 import net.myplayplanet.permission.core.enums.DeletionMode;
-import org.openapitools.client.model.PermissionInfoDto;
-import org.springframework.web.bind.annotation.PathVariable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -17,7 +18,9 @@ public interface PermissionClient extends PermissionClientMarker{
 
     Flux<UUID> deletePermission(UUID uuid, DeletionMode mode);
 
-    Mono<Boolean> hasPermission(UUID user, UUID permission);
+    Mono<Boolean> hasPermission(Long scope, UUID user, UUID permission);
 
-    Flux<UUID> getAll();
+    Flux<PermissionDisplayDto> getAll();
+
+    Mono<PermissionDisplayDto> getById(UUID uuid);
 }

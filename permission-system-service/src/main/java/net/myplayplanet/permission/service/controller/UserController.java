@@ -6,8 +6,10 @@ import net.myplayplanet.permission.core.dto.effective.ExtensiveEffectiveUserMode
 import net.myplayplanet.permission.core.dto.UserDto;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Role;
+import net.myplayplanet.permission.service.model.Scope;
 import net.myplayplanet.permission.service.model.User;
 import net.myplayplanet.permission.service.service.RoleService;
+import net.myplayplanet.permission.service.service.ScopeService;
 import net.myplayplanet.permission.service.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,33 +23,40 @@ public class UserController {
 
     private final UserService userService;
     private final RoleService roleService;
+    private final ScopeService scopeService;
+
     private final EntityMapper entityMapper;
 
-    @GetMapping("effective/extensive/{uuid}")
-    public ExtensiveEffectiveUserModelDto getExtensiveEffectiveUserModelDto(@PathVariable UUID uuid) {
-        return userService.getExtensiveEffectiveUserModel(userService.findUserOrThrow(uuid));
+    @GetMapping("{scope}/effective/extensive/{uuid}")
+    public ExtensiveEffectiveUserModelDto getExtensiveEffectiveUserModelDto(@PathVariable Long scope, @PathVariable UUID uuid) {
+        return userService.getExtensiveEffectiveUserModel(userService.findUserOrThrow(
+                this.scopeService.findScopeOrThrow(scope), uuid));
     }
 
-    @GetMapping("effective/{uuid}")
-    public EffectiveUserModelDto getEffectiveUserModelDto(@PathVariable UUID uuid) {
-        return userService.getEffectiveUserModel(userService.findUserOrThrow(uuid));
+    @GetMapping("{scope}/effective/{uuid}")
+    public EffectiveUserModelDto getEffectiveUserModelDto(@PathVariable Long scope, @PathVariable UUID uuid) {
+        return userService.getEffectiveUserModel(userService.findUserOrThrow(
+                this.scopeService.findScopeOrThrow(scope), uuid));
     }
 
-    @GetMapping("all/")
-    public Set<UserDto> getAll() {
-        return this.entityMapper.usersToUserDtos(this.userService.getAll());
+    @GetMapping("{scope}/all/")
+    public Set<UserDto> getAll(@PathVariable Long scope) {
+        return this.entityMapper.usersToUserDtos(this.userService.getAll(
+                this.scopeService.findScopeOrThrow(scope)));
     }
 
-    @PostMapping("role/add/{roleId}/user/{uuid}")
-    public UserDto addRole(@PathVariable UUID uuid, @PathVariable Long roleId) {
-        User user = this.userService.findUserOrThrow(uuid);
+    @PostMapping("{scope}/role/add/{roleId}/user/{uuid}")
+    public UserDto addRole(@PathVariable Long scope, @PathVariable UUID uuid, @PathVariable Long roleId) {
+        User user = this.userService.findUserOrThrow(
+                this.scopeService.findScopeOrThrow(scope), uuid);
         Role role = this.roleService.findOrThrow(roleId);
         return this.entityMapper.userToUserDto(this.userService.addRole(user, role));
     }
 
-    @PostMapping("role/remove/{roleId}/user/{uuid}")
-    public UserDto removeRole(@PathVariable UUID uuid, @PathVariable Long roleId) {
-        User user = this.userService.findUserOrThrow(uuid);
+    @PostMapping("{scope}/role/remove/{roleId}/user/{uuid}")
+    public UserDto removeRole(@PathVariable Long scope, @PathVariable UUID uuid, @PathVariable Long roleId) {
+        User user = this.userService.findUserOrThrow(
+                this.scopeService.findScopeOrThrow(scope), uuid);
         Role role = this.roleService.findOrThrow(roleId);
         return this.entityMapper.userToUserDto(this.userService.removeRole(user, role));
     }

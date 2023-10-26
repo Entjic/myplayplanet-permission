@@ -18,7 +18,7 @@ public class ExtensivePermissionSet extends HashSet<ExtensivePermissionDto> {
     public boolean add(ExtensivePermissionDto extensivePermissionDto) {
 
         for (ExtensivePermissionDto dto : this) {
-            if(dto.getPermissionDto().getKey().equals(extensivePermissionDto.getPermissionDto().getKey())) return false;
+            if(dto.getPermissionDto().getUuid().equals(extensivePermissionDto.getPermissionDto().getUuid())) return false;
         }
 
         return super.add(extensivePermissionDto);
@@ -28,7 +28,7 @@ public class ExtensivePermissionSet extends HashSet<ExtensivePermissionDto> {
     public Map<UUID, ExtensivePermissionDto> toMap(){
         Map<UUID, ExtensivePermissionDto> map = new HashMap<>();
         for (ExtensivePermissionDto permissionDto : this) {
-            map.put(permissionDto.getPermissionDto().getKey(), permissionDto);
+            map.put(permissionDto.getPermissionDto().getUuid(), permissionDto);
         }
         return map;
     }

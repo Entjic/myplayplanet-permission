@@ -3,6 +3,7 @@ package net.myplayplanet.permission.client.implementation;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import net.myplayplanet.permission.client.api.RoleClient;
+import net.myplayplanet.permission.core.dto.RoleDisplayDto;
 import net.myplayplanet.permission.core.dto.RoleDto;
 import net.myplayplanet.permission.core.enums.PermissionValue;
 import net.myplayplanet.services.rest.base.client.crud.DebugLevel;
@@ -20,31 +21,48 @@ final class RoleRestClient extends AbstractPermissionClient implements RoleClien
 
 
     @Override
-    public Mono<RoleDto> createRole(RoleDto roleDto) {
-        return super.post(uriBuilder -> uriBuilder.path(super.base).path("create/").build(),
-                roleDto, RoleDto.class);
+    public Mono<RoleDto> createRole(Long scope, RoleDto roleDto) {
+        return super.post(uriBuilder -> uriBuilder.path(super.base)
+                .path("{scope}/create/")
+                .build(scope), roleDto, RoleDto.class);
     }
 
     @Override
     public Mono<Long> deleteRole(Long id) {
-        return super.delete(uriBuilder -> uriBuilder.path(super.base).path("delete/{id}")
+        return super.delete(uriBuilder -> uriBuilder.path(super.base).path("delete/{id}/")
                 .build(id), Long.class);
     }
 
     @Override
     public Mono<RoleDto> changeWeight(Long id, Integer weight) {
-        return super.post(uriBuilder -> uriBuilder.path(super.base).path("{id}/weight/{weight}")
+        return super.post(uriBuilder -> uriBuilder.path(super.base)
+                .path("{id}/weight/{weight}/")
                 .build(id, weight), RoleDto.class);
     }
 
     @Override
     public Mono<RoleDto> setPermission(Long id, UUID uuid, PermissionValue value) {
-        return super.post(uriBuilder -> uriBuilder.path(super.base).path("{id}/permission/{uuid}/{value}")
+        return super.post(uriBuilder -> uriBuilder.path(super.base)
+                .path("{id}/permission/{uuid}/{value}/")
                 .build(id, uuid, value), RoleDto.class);
     }
 
     @Override
+    public Flux<RoleDisplayDto> getAllRolesByScope(Long scope) {
+        return super.getFlux(uriBuilder -> uriBuilder.path(super.base).path("{scope}/all/")
+                .build(scope), RoleDisplayDto.class);
+    }
+
+    @Override
     public Flux<Long> getAllRoleIds() {
-        return super.getFlux(uriBuilder -> uriBuilder.path(super.base).path("all/").build(), Long.class);
+        return super.getFlux(uriBuilder -> uriBuilder.path(super.base)
+                .path("ids/").build(), Long.class);
+    }
+
+    @Override
+    public Mono<RoleDisplayDto> getById(Long id) {
+        return super.get(uriBuilder -> uriBuilder.path(super.base)
+                .path("{id}/")
+                .build(id), RoleDisplayDto.class);
     }
 }

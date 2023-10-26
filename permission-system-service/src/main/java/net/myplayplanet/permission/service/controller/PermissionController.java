@@ -7,15 +7,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import net.myplayplanet.permission.core.dto.PermissionDisplayDto;
 import net.myplayplanet.permission.core.dto.PermissionInfoDto;
 import net.myplayplanet.permission.core.enums.DeletionMode;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.service.PermissionService;
+import net.myplayplanet.permission.service.service.ScopeService;
 import net.myplayplanet.permission.service.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,6 +30,7 @@ public class PermissionController {
 
     private final PermissionService permissionService;
     private final UserService userService;
+    private final ScopeService scopeService;
 
     private final EntityMapper entityMapper;
 
@@ -43,7 +47,6 @@ public class PermissionController {
     public PermissionInfoDto createPermission(@RequestBody PermissionInfoDto permissionInfoDto) {
         Permission permission = this.permissionService.saveNewPermission(permissionInfoDto.getKey(),
                 permissionInfoDto.getName(),
-                permissionInfoDto.getDescription(),
                 permissionInfoDto.getParent());
 
         return entityMapper.permissionToPermissionInfoDto(permission);
@@ -62,7 +65,6 @@ public class PermissionController {
     public PermissionInfoDto updatePermission(@RequestBody PermissionInfoDto permissionInfoDto) {
         Permission permission = this.permissionService.updateExistingPermission(permissionInfoDto.getKey(),
                 permissionInfoDto.getName(),
-                permissionInfoDto.getDescription(),
                 permissionInfoDto.getParent());
 
         return entityMapper.permissionToPermissionInfoDto(permission);
@@ -88,18 +90,29 @@ public class PermissionController {
     }
 
     @Operation(summary = "Check if user has permission.", description = "This endpoint checks if a specified user has a certain permission.")
-    @GetMapping("has/{user}/permission/{permission}")
-    public Boolean hasPermission(@Parameter(description = "The UUID of the user")
+    @GetMapping("{scope}/has/{user}/permission/{permission}")
+    public Boolean hasPermission(@Parameter(description = "ID of the scope")
+                                 @PathVariable Long scope,
+                                 @Parameter(description = "The UUID of the user")
                                  @PathVariable UUID user,
                                  @Parameter(description = "The UUID of the permission")
                                  @PathVariable UUID permission) {
-        return this.permissionService.hasPermission(this.userService.findUserOrThrow(user),
+        return this.permissionService.hasPermission(this.userService.findUserOrThrow(
+                        this.scopeService.findScopeOrThrow(scope),
+                        user),
                 this.permissionService.findPermissionOrThrow(permission));
     }
 
     @GetMapping("all/")
-    public Set<UUID> getAll() {
-        return this.permissionService.getAll();
+    public Set<PermissionDisplayDto> getAll() {
+        return this.entityMapper.permissionsToPermissionDisplayDtos(
+                this.permissionService.getAll());
+    }
+
+    @GetMapping("{uuid}/")
+    public PermissionDisplayDto getById(@PathVariable UUID uuid) {
+        return this.entityMapper.permissionToPermissionDisplayDto(
+                this.permissionService.findPermissionOrThrow(uuid));
     }
 
 }

@@ -14,9 +14,7 @@ import java.util.UUID;
 @ToString
 public class PermissionDto {
 
-    private UUID key;
+    private UUID uuid;
     private PermissionValue permissionValue;
-
-
 
 }

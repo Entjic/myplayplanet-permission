@@ -11,13 +11,13 @@ import java.util.UUID;
 
 public interface UserClient extends PermissionClientMarker{
 
-    Mono<ExtensiveEffectiveUserModelDto> getExtensiveEffectiveUserModelDto(UUID uuid);
+    Mono<ExtensiveEffectiveUserModelDto> getExtensiveEffectiveUserModelDto(Long scope, UUID uuid);
 
-    Mono<EffectiveUserModelDto> getEffectiveUserModelDto(UUID uuid);
+    Mono<EffectiveUserModelDto> getEffectiveUserModelDto(Long scope, UUID uuid);
 
-    Mono<UserDto> addRole(UUID uuid, Long roleId);
+    Mono<UserDto> addRole(Long scope, UUID uuid, Long roleId);
 
-    Mono<UserDto> removeRole(UUID uuid, Long roleId);
+    Mono<UserDto> removeRole(Long scope, UUID uuid, Long roleId);
 
-    Flux<UserDto> getAll();
+    Flux<UserDto> getAll(Long scope);
 }

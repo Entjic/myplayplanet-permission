@@ -3,10 +3,7 @@ package net.myplayplanet.permission.service.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Set;
 
 @Getter
@@ -21,6 +18,13 @@ public class Role {
     @Id
     private Long id;
 
+    @ManyToOne
+    private Scope scope;
+
+    @Column
+    private String name;
+
+    @Column
     private Integer weight;
 
     @OneToMany

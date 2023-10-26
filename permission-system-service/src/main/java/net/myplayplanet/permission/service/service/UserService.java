@@ -12,6 +12,7 @@ import net.myplayplanet.permission.core.dto.PermissionDto;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;
+import net.myplayplanet.permission.service.model.Scope;
 import net.myplayplanet.permission.service.model.User;
 import net.myplayplanet.permission.service.repository.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -32,12 +33,12 @@ public class UserService {
 
     private final RoleService roleService;
 
-    public User findUserOrThrow(UUID uuid){
-        return this.userRepository.findById(uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public User findUserOrThrow(Scope scope, UUID uuid){
+        return this.userRepository.findByScopeAndUuid(scope, uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Set<User> getAll(){
-        return new HashSet<>(this.userRepository.findAll());
+    public Set<User> getAll(Scope scope){
+        return new HashSet<>(this.userRepository.findAllByScope(scope));
     }
 
     public User addRole(User user, Role role){

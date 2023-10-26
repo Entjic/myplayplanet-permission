@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  
-  <parent>
-    <groupId>net.myplayplanet</groupId>
-    <artifactId>myplayplanet-spring-boot</artifactId>
-    <version>3.0.2-SNAPSHOT</version>
+    <modelVersion>4.0.0</modelVersion>
 
-  </parent>
-          
-  
-  
-  <artifactId>PermissionSystem</artifactId>
-  <groupId>net.myplayplanet.permission</groupId>
-  <version>1.0.0-SNAPSHOT</version>
-  <packaging>pom</packaging>
+    <parent>
+        <groupId>net.myplayplanet</groupId>
+        <artifactId>myplayplanet-spring-boot</artifactId>
+        <version>3.0.2-SNAPSHOT</version>
 
-  <description>Lightweight and simple-to-use Permission-System.</description>
-  
-  <properties>
-    <version.myplayplanet-services>3.0.0-SNAPSHOT</version.myplayplanet-services>
-    <version.mapstruct>1.5.3.Final</version.mapstruct>
-    <version.myplayplanet-di>1.0.0-SNAPSHOT</version.myplayplanet-di>
-  </properties>
-      
-  
-  
-  <modules>
-    <module>permission-system-service</module>
-    <module>permission-system-core</module>
-    <module>permission-system-client</module>
-  </modules>
-    
+    </parent>
+
+
+    <artifactId>PermissionSystem</artifactId>
+    <groupId>net.myplayplanet.permission</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <description>Lightweight and simple-to-use Permission-System.</description>
+
+    <properties>
+
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+
+        <version.myplayplanet-services>3.0.0-SNAPSHOT</version.myplayplanet-services>
+        <version.mapstruct>1.5.3.Final</version.mapstruct>
+        <version.myplayplanet-di>1.0.0-SNAPSHOT</version.myplayplanet-di>
+    </properties>
+
+
+    <modules>
+        <module>permission-system-service</module>
+        <module>permission-system-core</module>
+        <module>permission-system-client</module>
+        <module>permission-system-api</module>
+    </modules>
+
 
 </project>
