@@ -1,14 +1,14 @@
 package net.myplayplanet.permission.service.service;
 
 import lombok.RequiredArgsConstructor;
-import net.myplayplanet.permission.core.dto.PermissionDto;
-import net.myplayplanet.permission.core.dto.effective.EffectiveUserModelDto;
-import net.myplayplanet.permission.core.dto.effective.ExtensiveEffectiveUserModelDto;
-import net.myplayplanet.permission.core.dto.effective.ExtensivePermissionDto;
-import net.myplayplanet.permission.core.enums.PermissionOrigin;
-import net.myplayplanet.permission.core.enums.PermissionValue;
-import net.myplayplanet.permission.core.model.ExtensivePermissionSet;
-import net.myplayplanet.permission.core.model.PermissionSet;
+import net.myplayplanet.permission.service.dto.PermissionDto;
+import net.myplayplanet.permission.service.dto.effective.EffectiveUserModelDto;
+import net.myplayplanet.permission.service.dto.effective.ExtensiveEffectiveUserModelDto;
+import net.myplayplanet.permission.service.dto.effective.ExtensivePermissionDto;
+import net.myplayplanet.permission.service.dto.enums.PermissionOrigin;
+import net.myplayplanet.permission.service.dto.enums.PermissionValue;
+import net.myplayplanet.permission.service.dto.model.ExtensivePermissionSet;
+import net.myplayplanet.permission.service.dto.model.PermissionSet;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;

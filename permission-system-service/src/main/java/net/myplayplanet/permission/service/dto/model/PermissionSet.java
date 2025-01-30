@@ -1,7 +1,7 @@
-package net.myplayplanet.permission.core.model;
+package net.myplayplanet.permission.service.dto.model;
 
-import net.myplayplanet.permission.core.dto.PermissionDto;
-import net.myplayplanet.permission.core.enums.PermissionValue;
+import net.myplayplanet.permission.service.dto.PermissionDto;
+import net.myplayplanet.permission.service.dto.enums.PermissionValue;
 
 import java.util.HashMap;
 import java.util.HashSet;

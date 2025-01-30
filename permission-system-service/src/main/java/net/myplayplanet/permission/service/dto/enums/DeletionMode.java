@@ -1,4 +1,4 @@
-package net.myplayplanet.permission.core.enums;
+package net.myplayplanet.permission.service.dto.enums;
 
 public enum DeletionMode {
 

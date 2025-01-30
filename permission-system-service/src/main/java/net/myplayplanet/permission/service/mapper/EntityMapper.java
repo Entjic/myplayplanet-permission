@@ -1,7 +1,7 @@
 package net.myplayplanet.permission.service.mapper;
 
-import net.myplayplanet.permission.core.dto.*;
-import net.myplayplanet.permission.core.enums.PermissionValue;
+import net.myplayplanet.permission.service.dto.*;
+import net.myplayplanet.permission.service.dto.enums.PermissionValue;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;
 import net.myplayplanet.permission.service.model.Scope;

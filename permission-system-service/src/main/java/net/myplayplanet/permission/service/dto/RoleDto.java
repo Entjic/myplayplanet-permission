@@ -1,4 +1,4 @@
-package net.myplayplanet.permission.core.dto;
+package net.myplayplanet.permission.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

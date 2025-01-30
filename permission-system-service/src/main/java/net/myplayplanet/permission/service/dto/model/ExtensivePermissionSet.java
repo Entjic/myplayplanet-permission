@@ -1,6 +1,6 @@
-package net.myplayplanet.permission.core.model;
+package net.myplayplanet.permission.service.dto.model;
 
-import net.myplayplanet.permission.core.dto.effective.ExtensivePermissionDto;
+import net.myplayplanet.permission.service.dto.effective.ExtensivePermissionDto;
 
 import java.util.*;
 

@@ -3,7 +3,7 @@ package net.myplayplanet.permission.service.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import net.myplayplanet.permission.core.dto.ScopeDto;
+import net.myplayplanet.permission.service.dto.ScopeDto;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.service.ScopeService;
 import org.springframework.web.bind.annotation.*;

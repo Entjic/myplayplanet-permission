@@ -10,7 +10,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 @Slf4j
 public class PermissionSystem extends JavaPlugin {
 
-
     @Override
     public void onEnable() {
         log.info("Enabling Permission System");

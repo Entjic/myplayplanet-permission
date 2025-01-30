@@ -24,7 +24,7 @@
 
         <dependency>
             <groupId>net.myplayplanet.permission</groupId>
-            <artifactId>permission-system-generated-client</artifactId>
+            <artifactId>permission-system-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 

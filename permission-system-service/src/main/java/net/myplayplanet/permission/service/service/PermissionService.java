@@ -1,8 +1,8 @@
 package net.myplayplanet.permission.service.service;
 
 import lombok.RequiredArgsConstructor;
-import net.myplayplanet.permission.core.enums.DeletionMode;
-import net.myplayplanet.permission.core.model.PermissionSet;
+import net.myplayplanet.permission.service.dto.enums.DeletionMode;
+import net.myplayplanet.permission.service.dto.model.PermissionSet;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.User;

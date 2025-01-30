@@ -21,16 +21,13 @@
     <properties>
         <version.myplayplanet-di>1.0.0-SNAPSHOT</version.myplayplanet-di>
         <version.services>3.0.2-SNAPSHOT</version.services>
-
     </properties>
 
 
     <modules>
         <module>permission-system-service</module>
-        <module>permission-system-core</module>
-        <module>permission-system-client</module>
         <module>permission-system-bukkit</module>
-        <module>permission-system-generated-client</module>
+        <module>permission-system-client</module>
     </modules>
 
 

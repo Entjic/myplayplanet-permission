@@ -1,15 +1,19 @@
-package net.myplayplanet.permission.core.dto;
+package net.myplayplanet.permission.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PermissionDisplayDto {
+public class UserDto {
+
     private UUID uuid;
-    private String name;
+    private Set<RoleDto> roles;
+    private Set<PermissionDto> explicitPermissions;
+
 }

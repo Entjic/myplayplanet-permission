@@ -1,8 +1,8 @@
-package net.myplayplanet.permission.core.dto;
+package net.myplayplanet.permission.service.dto;
 
 import com.google.common.base.MoreObjects;
 import lombok.*;
-import net.myplayplanet.permission.core.enums.PermissionValue;
+import net.myplayplanet.permission.service.dto.enums.PermissionValue;
 
 import java.util.UUID;
 
