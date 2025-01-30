@@ -1,5 +1,7 @@
 package net.myplayplanet.permission.service.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.myplayplanet.permission.core.dto.effective.EffectiveUserModelDto;
 import net.myplayplanet.permission.core.dto.effective.ExtensiveEffectiveUserModelDto;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/v1/permission/user/")
 @RequiredArgsConstructor
+@Tag(name = "User")
 public class UserController {
 
     private final UserService userService;
@@ -39,6 +42,7 @@ public class UserController {
                 this.scopeService.findScopeOrThrow(scope), uuid));
     }
 
+    @Operation(operationId = "getAllUsersByScope")
     @GetMapping("{scope}/all/")
     public Set<UserDto> getAll(@PathVariable Long scope) {
         return this.entityMapper.usersToUserDtos(this.userService.getAll(

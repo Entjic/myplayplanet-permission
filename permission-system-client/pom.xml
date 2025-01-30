@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>PermissionSystem</artifactId>
         <groupId>net.myplayplanet.permission</groupId>
@@ -10,43 +11,23 @@
     <artifactId>permission-system-client</artifactId>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
     </properties>
 
     <dependencies>
-
         <dependency>
-            <groupId>net.myplayplanet.service</groupId>
-            <artifactId>myplayplanet-services</artifactId>
-            <version>${version.myplayplanet-services}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.myplayplanet.service</groupId>
-            <artifactId>base-rest-client</artifactId>
-            <version>${version.myplayplanet-services}</version>
+            <groupId>net.myplayplanet.permission</groupId>
+            <artifactId>permission-system-generated-client</artifactId>
+            <version>${project.version}</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.myplayplanet.di</groupId>
             <artifactId>dependency-injector</artifactId>
             <version>${version.myplayplanet-di}</version>
         </dependency>
-        <dependency>
-            <groupId>net.myplayplanet.permission</groupId>
-            <artifactId>permission-system-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+
     </dependencies>
 
 </project>

@@ -7,8 +7,7 @@
     <parent>
         <groupId>net.myplayplanet</groupId>
         <artifactId>myplayplanet-spring-boot</artifactId>
-        <version>3.0.2-SNAPSHOT</version>
-
+        <version>3.0.4-SNAPSHOT</version>
     </parent>
 
 
@@ -20,12 +19,9 @@
     <description>Lightweight and simple-to-use Permission-System.</description>
 
     <properties>
-
-        <maven.javadoc.skip>true</maven.javadoc.skip>
-
-        <version.myplayplanet-services>3.0.0-SNAPSHOT</version.myplayplanet-services>
-        <version.mapstruct>1.5.3.Final</version.mapstruct>
         <version.myplayplanet-di>1.0.0-SNAPSHOT</version.myplayplanet-di>
+        <version.services>3.0.2-SNAPSHOT</version.services>
+
     </properties>
 
 
@@ -33,7 +29,8 @@
         <module>permission-system-service</module>
         <module>permission-system-core</module>
         <module>permission-system-client</module>
-        <module>permission-system-api</module>
+        <module>permission-system-bukkit</module>
+        <module>permission-system-generated-client</module>
     </modules>
 
 

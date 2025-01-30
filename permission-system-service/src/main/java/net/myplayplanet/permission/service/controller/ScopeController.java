@@ -1,5 +1,7 @@
 package net.myplayplanet.permission.service.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.myplayplanet.permission.core.dto.ScopeDto;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
@@ -11,12 +13,14 @@ import java.util.Set;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/permission/scope/")
+@Tag(name = "Scope")
 public class ScopeController {
 
     private final ScopeService scopeService;
 
     private final EntityMapper entityMapper;
 
+    @Operation(operationId = "getScopeById")
     @GetMapping("{id}/")
     public ScopeDto getById(@PathVariable Long id) {
         return this.entityMapper.mapScopeToScopeDto(this.scopeService.findScopeOrThrow(id));
@@ -40,11 +44,13 @@ public class ScopeController {
         return scopeDto;
     }
 
+    @Operation(operationId = "getAllScopeIds")
     @GetMapping("all/id/")
     public Set<Long> getAllScopeIds() {
         return this.scopeService.getAllIds();
     }
 
+    @Operation(operationId = "getAllScopes")
     @GetMapping("all/")
     public Set<ScopeDto> getAll() {
         return this.entityMapper.mapScopesToScopeDtos(this.scopeService.getAll());

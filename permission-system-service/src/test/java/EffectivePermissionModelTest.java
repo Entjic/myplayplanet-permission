@@ -52,14 +52,10 @@ public class EffectivePermissionModelTest {
 
     @Test
     public void collidingRolePermissionsTest() {
-
         User user = new User(1L, UUID.randomUUID(), scope,
                 Set.of(generateRoleA(), generateRoleB()), Set.of(), Set.of());
 
         EffectiveUserModelDto effectiveUserModel = mockUserService().getEffectiveUserModel(user);
-
-        System.out.println(user);
-        System.out.println(effectiveUserModel.getPermissions());
 
         Assertions.assertEquals(user.getUuid(), effectiveUserModel.getUser());
         Assertions.assertEquals(generateRoleA().getGranted(), entityMapper.permissionDtosToPermissions(
@@ -76,10 +72,6 @@ public class EffectivePermissionModelTest {
                 Set.of(generateRoleA(), generateRoleB()), Set.of(), Set.of(this.permissionC));
 
         EffectiveUserModelDto effectiveUserModel = mockUserService().getEffectiveUserModel(user);
-
-        System.out.println(user);
-
-        System.out.println(effectiveUserModel);
 
         Assertions.assertEquals(user.getUuid(), effectiveUserModel.getUser());
         Assertions.assertEquals(Set.of(this.permissionA), entityMapper.permissionDtosToPermissions(
@@ -154,15 +146,14 @@ public class EffectivePermissionModelTest {
         Set<Permission> granted = Set.of(this.permissionA, this.permissionC);
         Set<Permission> denied = Set.of(this.permissionB);
 
-
-        return new Role(1L, scope, "rolle", 100, granted, denied);
+        return new Role(1L, scope, "rolle", 100, granted, denied, false);
     }
 
     private Role generateRoleB() {
         Set<Permission> granted = Set.of(this.permissionB, this.permissionC);
         Set<Permission> denied = Set.of(this.permissionA);
 
-        return new Role(2L, scope, "andere rolle", 50, granted, denied);
+        return new Role(2L, scope, "andere rolle", 50, granted, denied, false);
     }
 
 }

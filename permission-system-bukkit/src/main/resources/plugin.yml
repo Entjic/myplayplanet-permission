@@ -1,0 +1,7 @@
+name: PermissionSystem
+main: net.myplayplanet.permission.bukkit.PermissionSystem
+version: 1.0.0
+author: MyPlayPlanet Development
+description: Minecraft frontend to the MyPlayPlanet permission system.
+website: https://myplayplanet.dev
+api-version: 1.21

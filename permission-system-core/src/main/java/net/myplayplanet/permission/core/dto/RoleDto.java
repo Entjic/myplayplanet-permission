@@ -15,5 +15,6 @@ public class RoleDto {
     private String name;
     private Integer weight;
     private Set<PermissionDto> permissions;
+    private Boolean editable;
 
 }

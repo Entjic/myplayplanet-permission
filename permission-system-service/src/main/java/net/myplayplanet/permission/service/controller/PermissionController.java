@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.myplayplanet.permission.core.dto.PermissionDisplayDto;
 import net.myplayplanet.permission.core.dto.PermissionInfoDto;
@@ -18,7 +19,6 @@ import net.myplayplanet.permission.service.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,6 +26,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/permission/")
+@Tag(name = "Permission")
 public class PermissionController {
 
     private final PermissionService permissionService;
@@ -82,9 +83,9 @@ public class PermissionController {
             @ApiResponse(content = @Content(schema = @Schema(implementation = ResponseStatusException.class)),
                     responseCode = "404", description = "The referenced permission does not exist.")
     })
-    public Set<UUID> deletePermission(@Parameter(description = "The UUID of the permission")
+    public Set<UUID> deletePermission(@Parameter(description = "The UUID of the permission", required = true)
                                       @PathVariable UUID uuid,
-                                      @Parameter(description = "The mode used for deleting the permission.")
+                                      @Parameter(description = "The mode used for deleting the permission.", required = true)
                                       @PathVariable DeletionMode mode) {
         return this.permissionService.delete(Set.of(uuid), mode);
     }
@@ -103,12 +104,15 @@ public class PermissionController {
                 this.permissionService.findPermissionOrThrow(permission));
     }
 
+
+    @Operation(summary = "Fetches all existing permissions.", operationId = "getAllPermissions")
     @GetMapping("all/")
-    public Set<PermissionDisplayDto> getAll() {
+    public Set<PermissionDisplayDto> getAllPermissions() {
         return this.entityMapper.permissionsToPermissionDisplayDtos(
                 this.permissionService.getAll());
     }
 
+    @Operation(summary = "Fetches a permissions by its id.", operationId = "getPermissionById")
     @GetMapping("{uuid}/")
     public PermissionDisplayDto getById(@PathVariable UUID uuid) {
         return this.entityMapper.permissionToPermissionDisplayDto(

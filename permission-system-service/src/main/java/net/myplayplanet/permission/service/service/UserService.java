@@ -1,14 +1,14 @@
 package net.myplayplanet.permission.service.service;
 
 import lombok.RequiredArgsConstructor;
-import net.myplayplanet.permission.core.model.ExtensivePermissionSet;
-import net.myplayplanet.permission.core.enums.PermissionOrigin;
-import net.myplayplanet.permission.core.model.PermissionSet;
-import net.myplayplanet.permission.core.enums.PermissionValue;
+import net.myplayplanet.permission.core.dto.PermissionDto;
 import net.myplayplanet.permission.core.dto.effective.EffectiveUserModelDto;
 import net.myplayplanet.permission.core.dto.effective.ExtensiveEffectiveUserModelDto;
 import net.myplayplanet.permission.core.dto.effective.ExtensivePermissionDto;
-import net.myplayplanet.permission.core.dto.PermissionDto;
+import net.myplayplanet.permission.core.enums.PermissionOrigin;
+import net.myplayplanet.permission.core.enums.PermissionValue;
+import net.myplayplanet.permission.core.model.ExtensivePermissionSet;
+import net.myplayplanet.permission.core.model.PermissionSet;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;
@@ -19,13 +19,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.transaction.Transactional;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -33,25 +34,25 @@ public class UserService {
 
     private final RoleService roleService;
 
-    public User findUserOrThrow(Scope scope, UUID uuid){
+    public User findUserOrThrow(Scope scope, UUID uuid) {
         return this.userRepository.findByScopeAndUuid(scope, uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Set<User> getAll(Scope scope){
+    public Set<User> getAll(Scope scope) {
         return new HashSet<>(this.userRepository.findAllByScope(scope));
     }
 
-    public User addRole(User user, Role role){
+    public User addRole(User user, Role role) {
         user.getRoles().add(role);
         return userRepository.save(user);
     }
 
-    public User removeRole(User user, Role role){
+    public User removeRole(User user, Role role) {
         user.getRoles().remove(role);
         return userRepository.save(user);
     }
 
-    public ExtensiveEffectiveUserModelDto getExtensiveEffectiveUserModel(User user){
+    public ExtensiveEffectiveUserModelDto getExtensiveEffectiveUserModel(User user) {
         final ExtensiveEffectiveUserModelDto extensiveEffectiveUserModelDto = new ExtensiveEffectiveUserModelDto();
 
         extensiveEffectiveUserModelDto.setUser(user.getUuid());
@@ -61,7 +62,7 @@ public class UserService {
         return extensiveEffectiveUserModelDto;
     }
 
-    public EffectiveUserModelDto getEffectiveUserModel(User user){
+    public EffectiveUserModelDto getEffectiveUserModel(User user) {
         final EffectiveUserModelDto effectiveUserModelDto = new EffectiveUserModelDto();
         effectiveUserModelDto.setUser(user.getUuid());
         effectiveUserModelDto.setPermissions(calcPermissionSet(user));
@@ -69,16 +70,16 @@ public class UserService {
         return effectiveUserModelDto;
     }
 
-    private ExtensivePermissionSet calcExtensivePermissionSet(User user){
+    private ExtensivePermissionSet calcExtensivePermissionSet(User user) {
         final ExtensivePermissionSet set = roleService.getExtensivEffectivePermissions(user.getRoles());
 
         final Map<UUID, ExtensivePermissionDto> map = set.toMap();
 
         for (Permission permission : user.getGranted()) {
 
-            if(map.containsKey(permission.getUuid())){
+            if (map.containsKey(permission.getUuid())) {
                 PermissionValue permissionValue = map.get(permission.getUuid()).getPermissionDto().getPermissionValue();
-                if(!permissionValue.equals(PermissionValue.GRANTED)){
+                if (!permissionValue.equals(PermissionValue.GRANTED)) {
                     map.put(permission.getUuid(), generateExtensivePermissionDto(permission.getUuid(),
                             PermissionValue.GRANTED));
                 }
@@ -87,9 +88,9 @@ public class UserService {
 
         for (Permission permission : user.getDenied()) {
 
-            if(map.containsKey(permission.getUuid())){
+            if (map.containsKey(permission.getUuid())) {
                 PermissionValue permissionValue = map.get(permission.getUuid()).getPermissionDto().getPermissionValue();
-                if(!permissionValue.equals(PermissionValue.DENIED)){
+                if (!permissionValue.equals(PermissionValue.DENIED)) {
                     map.put(permission.getUuid(), generateExtensivePermissionDto(permission.getUuid(),
                             PermissionValue.DENIED));
                 }
@@ -100,33 +101,21 @@ public class UserService {
 
     }
 
-    private ExtensivePermissionDto generateExtensivePermissionDto(UUID uuid, PermissionValue permissionValue){
+    private ExtensivePermissionDto generateExtensivePermissionDto(UUID uuid, PermissionValue permissionValue) {
         return new ExtensivePermissionDto(new PermissionDto(uuid, permissionValue), PermissionOrigin.SPECIFIC, null);
     }
 
-    public PermissionSet calcPermissionSet(User user){
+    public PermissionSet calcPermissionSet(User user) {
         final PermissionSet rolePermissionDtos = roleService.getEffectivePermissions(user.getRoles());
 
         final Map<UUID, PermissionValue> map = rolePermissionDtos.toMap();
 
         for (Permission permission : user.getGranted()) {
-
-            if(map.containsKey(permission.getUuid())){
-                PermissionValue permissionValue = map.get(permission.getUuid());
-                if(!permissionValue.equals(PermissionValue.GRANTED)){
-                    map.put(permission.getUuid(), PermissionValue.GRANTED);
-                }
-            }
+            map.put(permission.getUuid(), PermissionValue.GRANTED);
         }
 
         for (Permission permission : user.getDenied()) {
-
-            if(map.containsKey(permission.getUuid())){
-                PermissionValue permissionValue = map.get(permission.getUuid());
-                if(!permissionValue.equals(PermissionValue.DENIED)){
-                    map.put(permission.getUuid(), PermissionValue.DENIED);
-                }
-            }
+            map.put(permission.getUuid(), PermissionValue.DENIED);
         }
 
         return new PermissionSet(map);

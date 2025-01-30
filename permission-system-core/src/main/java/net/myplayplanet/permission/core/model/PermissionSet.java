@@ -1,49 +1,41 @@
 package net.myplayplanet.permission.core.model;
 
-import net.myplayplanet.permission.core.enums.PermissionValue;
 import net.myplayplanet.permission.core.dto.PermissionDto;
+import net.myplayplanet.permission.core.enums.PermissionValue;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.UUID;
 
 public class PermissionSet extends HashSet<PermissionDto> {
 
 
-    public PermissionSet(){
+    public PermissionSet() {
         super();
     }
 
-    public PermissionSet(Map<UUID, PermissionValue> map){
+    public PermissionSet(Map<UUID, PermissionValue> map) {
         super();
         for (Map.Entry<UUID, PermissionValue> uuidPermissionValueEntry : map.entrySet()) {
             this.add(uuidPermissionValueEntry.getKey(), uuidPermissionValueEntry.getValue());
         }
     }
 
-    public boolean add(UUID uuid, PermissionValue permissionValue){
+    public boolean add(UUID uuid, PermissionValue permissionValue) {
         return this.add(new PermissionDto(uuid, permissionValue));
     }
 
-    @Override
-    public boolean add(PermissionDto permissionDto) {
-
-        for (PermissionDto dto : this) {
-            if(dto.getUuid().equals(permissionDto.getUuid())) return false;
+    public boolean contains(UUID uuid) {
+        for (final PermissionDto permissionDto : this) {
+            if (permissionDto.getUuid().equals(uuid)) {
+                return true;
+            }
         }
-
-        return super.add(permissionDto);
+        return false;
     }
 
-    @Override
-    public boolean addAll(Collection<? extends PermissionDto> c) {
-
-        for (PermissionDto permissionDto : c) {
-            this.add(permissionDto);
-        }
-
-        return true;
-    }
-
-    public Map<UUID, PermissionValue> toMap(){
+    public Map<UUID, PermissionValue> toMap() {
         Map<UUID, PermissionValue> map = new HashMap<>();
         for (PermissionDto permissionDto : this) {
             map.put(permissionDto.getUuid(), permissionDto.getPermissionValue());

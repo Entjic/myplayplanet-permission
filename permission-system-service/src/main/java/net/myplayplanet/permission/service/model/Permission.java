@@ -1,10 +1,10 @@
 package net.myplayplanet.permission.service.model;
 
 
+import com.google.common.base.MoreObjects;
 import lombok.*;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -14,14 +14,14 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "permissions")
 public class Permission {
 
     @Id
-    @Type(type = "uuid-char")
-    private UUID uuid = UUID.randomUUID();
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "uuid", nullable = false)
+    private UUID uuid;
 
     @Column
     private String name;
@@ -48,5 +48,15 @@ public class Permission {
     @Override
     public int hashCode() {
         return Objects.hash(getUuid());
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("uuid", uuid)
+                .add("name", name)
+                .add("parent", parent)
+                .add("children", children)
+                .toString();
     }
 }

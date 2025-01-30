@@ -26,7 +26,7 @@ public interface EntityMapper {
 
     Set<PermissionDisplayDto> permissionsToPermissionDisplayDtos(Collection<Permission> permissions);
 
-    default RoleDto roleToRoleDto(Role role){
+    default RoleDto roleToRoleDto(Role role) {
         RoleDto roleDto = new RoleDto();
         Set<PermissionDto> permissions = new HashSet<>();
 
@@ -47,15 +47,15 @@ public interface EntityMapper {
 
     Set<RoleDto> rolesToRoleDtos(Set<Role> roles);
 
-    default Role roleDtoToRole(RoleDto roleDto, Scope scope){
+    default Role roleDtoToRole(RoleDto roleDto, Scope scope) {
         final Set<Permission> grantedPermissions = new HashSet<>();
         final Set<Permission> deniedPermissions = new HashSet<>();
 
         for (PermissionDto permission : roleDto.getPermissions()) {
-            if(permission.getPermissionValue().equals(PermissionValue.GRANTED)){
+            if (permission.getPermissionValue().equals(PermissionValue.GRANTED)) {
                 grantedPermissions.add(this.permissionDtoToPermission(permission));
             }
-            if(permission.getPermissionValue().equals(PermissionValue.DENIED)){
+            if (permission.getPermissionValue().equals(PermissionValue.DENIED)) {
                 deniedPermissions.add(this.permissionDtoToPermission(permission));
             }
         }
@@ -65,10 +65,11 @@ public interface EntityMapper {
                 roleDto.getName(),
                 roleDto.getWeight(),
                 grantedPermissions,
-                deniedPermissions);
+                deniedPermissions,
+                roleDto.getEditable());
     }
 
-    default UserDto userToUserDto(User user){
+    default UserDto userToUserDto(User user) {
         UserDto userDto = new UserDto();
 
         userDto.setUuid(user.getUuid());

@@ -1,7 +1,6 @@
 package net.myplayplanet.permission.service.service;
 
 import lombok.RequiredArgsConstructor;
-import net.myplayplanet.permission.core.dto.ScopeDto;
 import net.myplayplanet.permission.service.model.Scope;
 import net.myplayplanet.permission.service.repository.ScopeRepository;
 import org.springframework.http.HttpStatus;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
