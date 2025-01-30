@@ -37,7 +37,9 @@
 
                             <!-- URL to your Swagger/OpenAPI spec -->
                             <enablePostProcessFile>true</enablePostProcessFile>
-                            <inputSpec>${project.parent.basedir}/permission-system-service/target/generated/openapi.json</inputSpec>
+                            <inputSpec>
+                                ${project.parent.basedir}/permission-system-service/target/generated/openapi.json
+                            </inputSpec>
                             <generatorName>java</generatorName>
                             <apiPackage>net.myplayplanet.permission.api</apiPackage>
                             <modelPackage>net.myplayplanet.permission.model</modelPackage>
@@ -52,7 +54,9 @@
                                 <developerOrganization>MyPlayPlanet</developerOrganization>
                                 <developerOrganizationUrl>myplayplanet.net</developerOrganizationUrl>
                             </configOptions>
-                            <additionalProperties>marker=IPermissionClient,markerPath=net.myplayplanet.permission.client.IPermissionClient</additionalProperties>
+                            <additionalProperties>
+                                marker=IPermissionClient,markerPath=net.myplayplanet.permission.client.IPermissionClient
+                            </additionalProperties>
                             <templateDirectory>src/main/resources/template/</templateDirectory>
                             <library>webclient</library>
                             <output>${project.build.directory}/generated-sources/openapi</output>
@@ -103,6 +107,13 @@
             <groupId>net.myplayplanet.di</groupId>
             <artifactId>dependency-injector</artifactId>
             <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--Dark magic to ensure service gets build before client to ensure openapi.json already is generated!-->
+        <dependency>
+            <groupId>net.myplayplanet.permission</groupId>
+            <artifactId>permission-system-service</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>
