@@ -41,14 +41,14 @@ public class PermissionController {
             @ApiResponse(content = @Content(schema = @Schema(implementation = PermissionInfoDto.class)),
                     responseCode = "200", description = "Permission created successfully."),
             @ApiResponse(content = @Content(schema = @Schema(implementation = ResponseStatusException.class)),
-                    responseCode = "407", description = "The ID is not unique."),
+                    responseCode = "409", description = "The ID is not unique."),
             @ApiResponse(content = @Content(schema = @Schema(implementation = ResponseStatusException.class)),
-                    responseCode = "404", description = "The referenced parent does not exist.")
+                    responseCode = "404", description = "The referenced parent does not exist."),
     })
     public PermissionInfoDto createPermission(@RequestBody PermissionInfoDto permissionInfoDto) {
         Permission permission = this.permissionService.saveNewPermission(permissionInfoDto.getKey(),
                 permissionInfoDto.getName(),
-                permissionInfoDto.getParent());
+                permissionInfoDto.getParent(), permissionInfoDto.getScope());
 
         return entityMapper.permissionToPermissionInfoDto(permission);
     }
@@ -66,7 +66,7 @@ public class PermissionController {
     public PermissionInfoDto updatePermission(@RequestBody PermissionInfoDto permissionInfoDto) {
         Permission permission = this.permissionService.updateExistingPermission(permissionInfoDto.getKey(),
                 permissionInfoDto.getName(),
-                permissionInfoDto.getParent());
+                permissionInfoDto.getParent(), permissionInfoDto.getScope());
 
         return entityMapper.permissionToPermissionInfoDto(permission);
     }

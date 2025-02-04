@@ -26,6 +26,11 @@ public class ScopeController {
         return this.entityMapper.mapScopeToScopeDto(this.scopeService.findScopeOrThrow(id));
     }
 
+    @PostMapping("getOrCreate/")
+    public ScopeDto getOrCreateScope(@RequestBody ScopeDto scopeDto) {
+        return this.entityMapper.mapScopeToScopeDto(this.scopeService.createOrFind(scopeDto.getName()));
+    }
+
     @PostMapping("create/{name}/")
     public ScopeDto create(@PathVariable String name) {
         return this.entityMapper.mapScopeToScopeDto(this.scopeService.create(name));

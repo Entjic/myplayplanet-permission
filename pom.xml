@@ -19,8 +19,7 @@
     <description>Lightweight and simple-to-use Permission-System.</description>
 
     <properties>
-        <version.myplayplanet-di>1.0.0-SNAPSHOT</version.myplayplanet-di>
-        <version.services>3.0.2-SNAPSHOT</version.services>
+        <version.myplayplanet-di>1.0.1-SNAPSHOT</version.myplayplanet-di>
     </properties>
 
 
@@ -28,6 +27,7 @@
         <module>permission-system-service</module>
         <module>permission-system-bukkit</module>
         <module>permission-system-client</module>
+        <module>permission-system-spring</module>
     </modules>
 
 

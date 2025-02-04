@@ -42,6 +42,12 @@ public class RoleController {
         return entityMapper.roleToRoleDto(this.roleService.save(role));
     }
 
+    @PostMapping("{scope}/alterOrCreate/")
+    public RoleDto alterOrCreateRole(@PathVariable Long scope, @RequestBody RoleDto roleDto) {
+        Role role = entityMapper.roleDtoToRole(roleDto, this.scopeService.findScopeOrThrow(scope));
+        return entityMapper.roleToRoleDto(this.roleService.alterOrCreate(role));
+    }
+
     @DeleteMapping("delete/{id}/")
     public Long deleteRole(@PathVariable Long id) {
         return this.roleService.delete(id);
@@ -62,6 +68,13 @@ public class RoleController {
     @GetMapping("{scope}/all/")
     public Set<Long> getAllRoleIdsByScope(@PathVariable Long scope) {
         return this.roleService.getAll(this.scopeService.findScopeOrThrow(scope));
+    }
+
+    @Operation(operationId = "getByName")
+    @GetMapping("{scope}/name")
+    public RoleDto getByName(@PathVariable Long scope, @RequestParam String name) {
+        Role role = this.roleService.getByName(this.scopeService.findScopeOrThrow(scope), name);
+        return entityMapper.roleToRoleDto(role);
     }
 
     @GetMapping("ids/")

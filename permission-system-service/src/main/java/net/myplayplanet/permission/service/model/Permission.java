@@ -19,9 +19,11 @@ import java.util.UUID;
 public class Permission {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "uuid", nullable = false)
     private UUID uuid;
+
+    @ManyToOne
+    private Scope scope;
 
     @Column
     private String name;

@@ -17,13 +17,13 @@ public class ScopeService {
 
     private final ScopeRepository scopeRepository;
 
-    public Scope findScopeOrThrow(Long id){
+    public Scope findScopeOrThrow(Long id) {
         return this.scopeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "No scope with id " + id + " found."));
     }
 
-    public Set<Long> getAllIds(){
+    public Set<Long> getAllIds() {
         return this.scopeRepository.findAll().stream()
                 .map(Scope::getId)
                 .collect(Collectors.toSet());
@@ -33,7 +33,7 @@ public class ScopeService {
         return this.scopeRepository.findAll();
     }
 
-    public Scope create(String name){
+    public Scope create(String name) {
         return this.scopeRepository.save(new Scope(null, name));
     }
 
@@ -45,5 +45,11 @@ public class ScopeService {
 
     public void delete(Long id) {
         this.scopeRepository.deleteById(id);
+    }
+
+    public Scope createOrFind(final String name) {
+        Scope byName = this.scopeRepository.findByName(name);
+        if (byName == null) return this.create(name);
+        return byName;
     }
 }

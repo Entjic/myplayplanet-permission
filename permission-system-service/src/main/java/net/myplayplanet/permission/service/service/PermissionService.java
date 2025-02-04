@@ -23,6 +23,7 @@ public class PermissionService {
     private final PermissionRepository permissionRepository;
     private final EntityMapper entityMapper;
     private final UserService userService;
+    private final ScopeService scopeService;
 
     public Permission findPermissionOrThrow(UUID uuid) {
         return this.permissionRepository.findById(uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -36,7 +37,7 @@ public class PermissionService {
         PermissionSet permissionSet = this.userService.calcPermissionSet(user);
         return hasPermission(permissionSet, permission);
     }
-    
+
     private Boolean hasPermission(PermissionSet set, Permission permission) {
         Set<Permission> requiredSet = collectPermissionsThatSatisfyPermission(permission);
         Set<Permission> actualSet = this.entityMapper.permissionDtosToPermissions(set);
@@ -57,19 +58,19 @@ public class PermissionService {
         return set;
     }
 
-    public Permission saveNewPermission(UUID uuid, String name, UUID parent) {
+    public Permission saveNewPermission(UUID uuid, String name, UUID parent, Long scope) {
         if (permissionRepository.existsById(uuid))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "There already exists a permission with the specified uuid");
-        return this.saveOrUpdatePermission(uuid, name, parent);
+        return this.saveOrUpdatePermission(uuid, name, parent, scope);
     }
 
-    public Permission updateExistingPermission(UUID uuid, String name, UUID parent) {
+    public Permission updateExistingPermission(UUID uuid, String name, UUID parent, Long scope) {
         this.findPermissionOrThrow(uuid);
-        return this.saveOrUpdatePermission(uuid, name, parent);
+        return this.saveOrUpdatePermission(uuid, name, parent, scope);
     }
 
-    private Permission saveOrUpdatePermission(UUID uuid, String name, UUID parent) {
-        Permission permission = this.saveOrUpdatePermission(uuid, name);
+    private Permission saveOrUpdatePermission(UUID uuid, String name, UUID parent, Long scope) {
+        Permission permission = this.saveOrUpdatePermission(uuid, name, scope);
 
         if (parent == null) return permission;
 
@@ -79,7 +80,7 @@ public class PermissionService {
         return this.findPermissionOrThrow(uuid);
     }
 
-    private Permission saveOrUpdatePermission(UUID uuid, String name) {
+    private Permission saveOrUpdatePermission(UUID uuid, String name, Long scope) {
         if (permissionRepository.existsById(uuid)) {
             Permission permission = this.findPermissionOrThrow(uuid);
             Permission parent = permission.getParent();
@@ -87,7 +88,7 @@ public class PermissionService {
             permission.setName(name);
             return permissionRepository.save(permission);
         }
-        Permission permission = new Permission(uuid, name, null, new HashSet<>());
+        Permission permission = new Permission(uuid, this.scopeService.findScopeOrThrow(scope), name, null, new HashSet<>());
         return permissionRepository.save(permission);
     }
 

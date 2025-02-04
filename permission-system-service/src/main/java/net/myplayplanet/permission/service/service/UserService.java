@@ -81,7 +81,7 @@ public class UserService {
                 PermissionValue permissionValue = map.get(permission.getUuid()).getPermissionDto().getPermissionValue();
                 if (!permissionValue.equals(PermissionValue.GRANTED)) {
                     map.put(permission.getUuid(), generateExtensivePermissionDto(permission.getUuid(),
-                            PermissionValue.GRANTED));
+                            PermissionValue.GRANTED, user.getScope().getId()));
                 }
             }
         }
@@ -92,7 +92,7 @@ public class UserService {
                 PermissionValue permissionValue = map.get(permission.getUuid()).getPermissionDto().getPermissionValue();
                 if (!permissionValue.equals(PermissionValue.DENIED)) {
                     map.put(permission.getUuid(), generateExtensivePermissionDto(permission.getUuid(),
-                            PermissionValue.DENIED));
+                            PermissionValue.DENIED, user.getScope().getId()));
                 }
             }
         }
@@ -101,12 +101,12 @@ public class UserService {
 
     }
 
-    private ExtensivePermissionDto generateExtensivePermissionDto(UUID uuid, PermissionValue permissionValue) {
-        return new ExtensivePermissionDto(new PermissionDto(uuid, permissionValue), PermissionOrigin.SPECIFIC, null);
+    private ExtensivePermissionDto generateExtensivePermissionDto(UUID uuid, PermissionValue permissionValue, Long scope) {
+        return new ExtensivePermissionDto(new PermissionDto(uuid, scope, permissionValue), PermissionOrigin.SPECIFIC, null);
     }
 
     public PermissionSet calcPermissionSet(User user) {
-        final PermissionSet rolePermissionDtos = roleService.getEffectivePermissions(user.getRoles());
+        final PermissionSet rolePermissionDtos = roleService.getEffectivePermissions(user.getRoles(), user.getScope().getId());
 
         final Map<UUID, PermissionValue> map = rolePermissionDtos.toMap();
 
@@ -118,7 +118,7 @@ public class UserService {
             map.put(permission.getUuid(), PermissionValue.DENIED);
         }
 
-        return new PermissionSet(map);
+        return new PermissionSet(map, user.getScope().getId());
     }
 
 }

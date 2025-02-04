@@ -16,9 +16,16 @@ import java.util.Set;
 @Mapper(componentModel = "spring")
 public interface EntityMapper {
 
-    Permission permissionDtoToPermission(PermissionDto permissionDto);
-
     Set<Permission> permissionDtosToPermissions(Set<PermissionDto> permissionDtoSet);
+
+    default Long map(Scope scope) {
+        return scope.getId();
+    }
+
+    default Scope map(Long scope) {
+        return new Scope(scope, null);
+    }
+
 
     PermissionDto permissionToPermissionDto(Permission permission, PermissionValue permissionValue);
 
@@ -52,11 +59,12 @@ public interface EntityMapper {
         final Set<Permission> deniedPermissions = new HashSet<>();
 
         for (PermissionDto permission : roleDto.getPermissions()) {
+            Permission obj = new Permission(permission.getUuid(), scope, null, null, null);
             if (permission.getPermissionValue().equals(PermissionValue.GRANTED)) {
-                grantedPermissions.add(this.permissionDtoToPermission(permission));
+                grantedPermissions.add(obj);
             }
             if (permission.getPermissionValue().equals(PermissionValue.DENIED)) {
-                deniedPermissions.add(this.permissionDtoToPermission(permission));
+                deniedPermissions.add(obj);
             }
         }
 
@@ -94,9 +102,12 @@ public interface EntityMapper {
 
     @Mapping(source = "permission.parent.uuid", target = "parent")
     @Mapping(source = "permission.uuid", target = "key")
+    @Mapping(source = "permission.scope.id", target = "scope")
     PermissionInfoDto permissionToPermissionInfoDto(Permission permission);
 
     ScopeDto mapScopeToScopeDto(Scope scope);
+
+    Scope mapScopeDtoToScope(ScopeDto scopeDto);
 
     Set<ScopeDto> mapScopesToScopeDtos(Collection<Scope> scopes);
 

@@ -9,21 +9,23 @@ import java.util.Map;
 import java.util.UUID;
 
 public class PermissionSet extends HashSet<PermissionDto> {
+    private final Long scope;
 
-
-    public PermissionSet() {
+    public PermissionSet(final Long scope) {
         super();
+        this.scope = scope;
     }
 
-    public PermissionSet(Map<UUID, PermissionValue> map) {
+    public PermissionSet(Map<UUID, PermissionValue> map, final Long scope) {
         super();
+        this.scope = scope;
         for (Map.Entry<UUID, PermissionValue> uuidPermissionValueEntry : map.entrySet()) {
             this.add(uuidPermissionValueEntry.getKey(), uuidPermissionValueEntry.getValue());
         }
     }
 
     public boolean add(UUID uuid, PermissionValue permissionValue) {
-        return this.add(new PermissionDto(uuid, permissionValue));
+        return this.add(new PermissionDto(uuid, scope, permissionValue));
     }
 
     public boolean contains(UUID uuid) {

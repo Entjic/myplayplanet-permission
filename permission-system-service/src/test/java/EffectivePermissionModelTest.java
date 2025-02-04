@@ -1,10 +1,10 @@
+import net.myplayplanet.permission.service.PermissionSystemApplication;
 import net.myplayplanet.permission.service.dto.PermissionDto;
 import net.myplayplanet.permission.service.dto.effective.EffectiveUserModelDto;
 import net.myplayplanet.permission.service.dto.effective.ExtensiveEffectiveUserModelDto;
 import net.myplayplanet.permission.service.dto.effective.ExtensivePermissionDto;
 import net.myplayplanet.permission.service.dto.enums.PermissionOrigin;
 import net.myplayplanet.permission.service.dto.enums.PermissionValue;
-import net.myplayplanet.permission.service.PermissionSystemApplication;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;
@@ -36,12 +36,11 @@ public class EffectivePermissionModelTest {
 
     @Autowired
     private EntityMapper entityMapper;
-
-    private final Permission permissionA = new Permission(UUID.randomUUID());
-    private final Permission permissionB = new Permission(UUID.randomUUID());
-    private final Permission permissionC = new Permission(UUID.randomUUID());
-
     private final Scope scope = new Scope(1L, "TestScope");
+
+    private final Permission permissionA = new Permission(UUID.randomUUID(), scope, "A", null, null);
+    private final Permission permissionB = new Permission(UUID.randomUUID(), scope, "B", null, null);
+    private final Permission permissionC = new Permission(UUID.randomUUID(), scope, "C", null, null);
 
 
     private UserService mockUserService() {
