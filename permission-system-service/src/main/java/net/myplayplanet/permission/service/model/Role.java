@@ -15,13 +15,13 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "roles", uniqueConstraints = {
+@Table(name = "role", uniqueConstraints = {
         @UniqueConstraint(name = "uc_role_name_scope_id", columnNames = {"name", "scope_id"})
 })
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 

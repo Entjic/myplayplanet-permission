@@ -17,12 +17,12 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "permissions", uniqueConstraints = {
+@Table(name = "permission", uniqueConstraints = {
         @UniqueConstraint(name = "uc_permission_key", columnNames = {"permission_key"})
 })
 public class Permission {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "permission_key", nullable = false)

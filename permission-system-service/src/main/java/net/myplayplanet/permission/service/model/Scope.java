@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.LinkedHashSet;
@@ -16,10 +17,10 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "roles")
+@Table(name = "scope")
 public class Scope {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
@@ -27,7 +28,7 @@ public class Scope {
     private String name; // should also be unique, but not mandatory
 
     @ManyToMany
-    @JoinTable(name = "roles_permissions",
+    @JoinTable(name = "scope_permissions",
             joinColumns = @JoinColumn(name = "scope_id"),
             inverseJoinColumns = @JoinColumn(name = "permissions_uuid"))
     private Set<Permission> permissions = new LinkedHashSet<>();
