@@ -114,6 +114,7 @@
             <groupId>net.myplayplanet.permission</groupId>
             <artifactId>permission-system-service</artifactId>
             <version>${project.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

@@ -5,8 +5,10 @@ import net.myplayplanet.permission.service.dto.enums.DeletionMode;
 import net.myplayplanet.permission.service.dto.model.PermissionSet;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
+import net.myplayplanet.permission.service.model.Scope;
 import net.myplayplanet.permission.service.model.User;
 import net.myplayplanet.permission.service.repository.PermissionRepository;
+import net.myplayplanet.permission.service.repository.ScopeRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,13 +25,16 @@ public class PermissionService {
     private final EntityMapper entityMapper;
     private final UserService userService;
     private final ScopeService scopeService;
+    private final ScopeRepository scopeRepository;
 
-    public Permission findPermissionOrThrow(UUID uuid) {
-        return this.permissionRepository.findById(uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public Permission findPermissionOrThrow(String key) {
+        return this.permissionRepository.findByKey(key).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Collection<Permission> getAll() {
-        return this.permissionRepository.findAll();
+    public Collection<Permission> getAllByScope(Long scopeId) {
+
+        Scope scope = this.scopeService.findScopeOrThrow(scopeId);
+        return scope.getPermissions();
     }
 
     public Boolean hasPermission(User user, Permission permission) {
@@ -58,37 +62,42 @@ public class PermissionService {
         return set;
     }
 
-    public Permission saveNewPermission(UUID uuid, String name, UUID parent, Long scope) {
-        if (permissionRepository.existsById(uuid))
+    public Permission saveNewPermission(String key, String parent) {
+        if (permissionRepository.existsByKey(key))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "There already exists a permission with the specified uuid");
-        return this.saveOrUpdatePermission(uuid, name, parent, scope);
+        return this.saveOrUpdatePermission(key, parent);
     }
 
-    public Permission updateExistingPermission(UUID uuid, String name, UUID parent, Long scope) {
-        this.findPermissionOrThrow(uuid);
-        return this.saveOrUpdatePermission(uuid, name, parent, scope);
+    public Permission updateExistingPermission(String key, String parent) {
+        this.assertPermissionExistsByKey(key);
+        return this.saveOrUpdatePermission(key, parent);
     }
 
-    private Permission saveOrUpdatePermission(UUID uuid, String name, UUID parent, Long scope) {
-        Permission permission = this.saveOrUpdatePermission(uuid, name, scope);
+    private void assertPermissionExistsByKey(String key) {
+        if (!permissionRepository.existsByKey(key))
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "There already exists a permission with the specified uuid");
+    }
+
+    private Permission saveOrUpdatePermission(String key, String parent) {
+        Permission permission = this.saveOrUpdatePermission(key);
 
         if (parent == null) return permission;
 
         Permission newParent = this.findPermissionOrThrow(parent);
         this.linkPermissions(newParent, permission);
 
-        return this.findPermissionOrThrow(uuid);
+        return this.findPermissionOrThrow(key);
     }
 
-    private Permission saveOrUpdatePermission(UUID uuid, String name, Long scope) {
-        if (permissionRepository.existsById(uuid)) {
-            Permission permission = this.findPermissionOrThrow(uuid);
+    private Permission saveOrUpdatePermission(String key) {
+        if (permissionRepository.existsByKey(key)) {
+            Permission permission = this.findPermissionOrThrow(key);
             Permission parent = permission.getParent();
             this.unlinkPermissions(parent, permission);
-            permission.setName(name);
+            permission.setKey(key);
             return permissionRepository.save(permission);
         }
-        Permission permission = new Permission(uuid, this.scopeService.findScopeOrThrow(scope), name, null, new HashSet<>());
+        Permission permission = new Permission(key);
         return permissionRepository.save(permission);
     }
 
@@ -113,24 +122,24 @@ public class PermissionService {
 
     }
 
-    public Set<UUID> delete(Set<UUID> uuids, DeletionMode mode) {
-        Set<UUID> output = new HashSet<>();
+    public Set<String> delete(Set<String> keys, DeletionMode mode) {
+        Set<String> output = new HashSet<>();
         switch (mode) {
             case SHALLOW -> {
-                for (UUID uuid : uuids) {
-                    output.add(this.deleteShallowNaiv(uuid));
+                for (String key : keys) {
+                    output.add(this.deleteShallowNaiv(key));
                 }
             }
             case RECURSIVE -> {
-                for (UUID uuid : uuids) {
-                    this.permissionRepository.findById(uuid).ifPresent(permission -> {
-                        output.addAll(this.deleteRecursive(uuid));
+                for (String key : keys) {
+                    this.permissionRepository.findByKey(key).ifPresent(permission -> {
+                        output.addAll(this.deleteRecursive(key));
                     });
                 }
             }
             case INTELLIGENT -> {
-                for (UUID uuid : uuids) {
-                    output.add(this.deleteShallowIntelligent(uuid));
+                for (String key : keys) {
+                    output.add(this.deleteShallowIntelligent(key));
                 }
             }
         }
@@ -138,22 +147,22 @@ public class PermissionService {
     }
 
     // rips a hole in tree
-    public UUID deleteShallowNaiv(UUID uuid) {
-        Permission permission = this.findPermissionOrThrow(uuid);
+    public String deleteShallowNaiv(String key) {
+        Permission permission = this.findPermissionOrThrow(key);
         for (Permission child : permission.getChildren()) {
             child.setParent(null);
             this.permissionRepository.save(child);
         }
         this.permissionRepository.delete(permission);
-        return uuid;
+        return key;
     }
 
     // makes sure the tree stays complete
-    public UUID deleteShallowIntelligent(UUID uuid) {
-        Permission permission = this.findPermissionOrThrow(uuid);
+    public String deleteShallowIntelligent(String key) {
+        Permission permission = this.findPermissionOrThrow(key);
 
         if (permission.getParent() == null) {
-            return this.deleteShallowNaiv(uuid);
+            return this.deleteShallowNaiv(key);
         }
         Permission parent = permission.getParent();
         for (Permission child : permission.getChildren()) {
@@ -163,30 +172,37 @@ public class PermissionService {
         parent.getChildren().addAll(permission.getChildren());
         this.permissionRepository.save(parent);
         this.permissionRepository.delete(permission);
-        return uuid;
+        return key;
     }
 
     // deletes every sub permission, therefore the tree stays complete
-    private Set<UUID> deleteRecursive(UUID uuid) {
+    private Set<String> deleteRecursive(String key) {
         Set<Permission> open = new HashSet<>();
-        Permission root = this.findPermissionOrThrow(uuid);
+        Permission root = this.findPermissionOrThrow(key);
         open.add(root);
 
         return delete(open);
     }
 
-    private Set<UUID> delete(Set<Permission> open) {
-        Set<UUID> closed = new HashSet<>();
+    private Set<String> delete(Set<Permission> open) {
+        Set<String> closed = new HashSet<>();
         Permission current;
         while (!open.isEmpty()) {
             current = open.iterator().next();
             open.addAll(current.getChildren());
-            UUID uuid = current.getUuid();
+            String key = current.getKey();
             this.permissionRepository.delete(current);
-            closed.add(uuid);
+            closed.add(key);
         }
 
         return closed;
+    }
+
+    public void addToScope(String key, Long scopeId) {
+        Scope scope = this.scopeService.findScopeOrThrow(scopeId);
+        Permission permission = this.findPermissionOrThrow(key);
+        scope.getPermissions().add(permission);
+        this.scopeRepository.save(scope);
     }
 
 }

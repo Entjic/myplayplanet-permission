@@ -19,9 +19,6 @@ public class PermissionSystem extends JavaPlugin {
 
         PermissionClient permissionApi = injector.getInstance(PermissionClient.class);
 
-        permissionApi.getAllPermissions().doOnNext(permissionDisplayDto -> {
-            log.info(permissionDisplayDto.getName());
-        }).subscribe();
     }
 
     @Override

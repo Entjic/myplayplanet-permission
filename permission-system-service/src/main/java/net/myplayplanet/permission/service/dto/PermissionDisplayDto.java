@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PermissionDisplayDto {
-    private UUID uuid;
-    private String name;
+    private String key, parent;
+    private Set<String> children;
 }

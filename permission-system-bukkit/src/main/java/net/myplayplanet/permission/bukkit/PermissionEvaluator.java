@@ -20,7 +20,7 @@ public class PermissionEvaluator {
 
     }
 
-    public Mono<Boolean> hasPermission(UUID user, UUID permission) {
+    public Mono<Boolean> hasPermission(UUID user, String permission) {
         return permissionClient.hasPermission(this.scope, user, permission)
                 .onErrorResume(throwable -> {
                     log.error("Error whilst checking if user {} has permission {}, " +

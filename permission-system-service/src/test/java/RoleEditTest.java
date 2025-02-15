@@ -14,7 +14,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Set;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
@@ -29,9 +28,9 @@ public class RoleEditTest {
     @Autowired
     private EntityMapper entityMapper;
 
-    private final Permission permissionA = new Permission(UUID.randomUUID());
-    private final Permission permissionB = new Permission(UUID.randomUUID());
-    private final Permission permissionC = new Permission(UUID.randomUUID());
+    private final Permission permissionA = new Permission("test.permissionA");
+    private final Permission permissionB = new Permission("test.permissionB");
+    private final Permission permissionC = new Permission("test.permissionC");
 
     private final Scope scope = new Scope(1L, "TestScope");
 
@@ -54,11 +53,11 @@ public class RoleEditTest {
     }
 
     private Role validRole() {
-        return new Role(1L, scope, "Valid role", 10, Set.of(permissionA), Set.of(permissionB), false);
+        return new Role(scope, "Valid role", 10, Set.of(permissionA), Set.of(permissionB));
     }
 
     private Role invalidRole() {
-        return new Role(2L, scope, "Invalid role", 5, Set.of(permissionC), Set.of(permissionC), false);
+        return new Role(scope, "Invalid role", 5, Set.of(permissionC), Set.of(permissionC));
     }
 
 

@@ -11,10 +11,6 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PermissionInfoDto {
 
-    private UUID key;
-    private Long scope;
-
-    private String name;
-
-    private UUID parent; // nullable
+    private String key;
+    private String parent; // nullable
 }

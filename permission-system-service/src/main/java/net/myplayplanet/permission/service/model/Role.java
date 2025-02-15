@@ -15,7 +15,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "roles")
+@Table(name = "roles", uniqueConstraints = {
+        @UniqueConstraint(name = "uc_role_name_scope_id", columnNames = {"name", "scope_id"})
+})
 public class Role {
 
     @Id
@@ -38,8 +40,15 @@ public class Role {
     @OneToMany
     private Set<Permission> denied;
 
-    @Column(name = "editable", nullable = false)
-    private Boolean editable = false;
+    @Column(nullable = false)
+    private Boolean editable = false; // If not editable, name is a translation key, otherwise its user input freeform
+
+    @Column
+    private String description;
+
+    public Role(Scope scope, String name, Integer weight, Set<Permission> granted, Set<Permission> denied) {
+        this(null, scope, name, weight, granted, denied, false, "");
+    }
 
     @Override
     public String toString() {

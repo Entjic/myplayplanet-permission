@@ -2,31 +2,31 @@ package net.myplayplanet.permission.service.model;
 
 
 import com.google.common.base.MoreObjects;
-import lombok.*;
-
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.UUID;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "permissions")
+@Table(name = "permissions", uniqueConstraints = {
+        @UniqueConstraint(name = "uc_permission_key", columnNames = {"permission_key"})
+})
 public class Permission {
-
     @Id
-    @Column(name = "uuid", nullable = false)
-    private UUID uuid;
+    @GeneratedValue
+    private Long id;
 
-    @ManyToOne
-    private Scope scope;
-
-    @Column
-    private String name;
+    @Column(name = "permission_key", nullable = false)
+    private String key; // base for generating related translation keys ie for name, description etc, also used for grouping!
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Permission parent;
@@ -34,8 +34,9 @@ public class Permission {
     @OneToMany(mappedBy = "parent")
     private Set<Permission> children = new HashSet<>();
 
-    public Permission(UUID uuid) {
-        this.uuid = uuid;
+
+    public Permission(String key) {
+        this.key = key;
     }
 
     // FIXME: 16.10.23 to prevent recursion overflow, equals and hashcode only rely on uuid, maybe there are some drawbacks?
@@ -44,21 +45,22 @@ public class Permission {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Permission that)) return false;
-        return Objects.equals(getUuid(), that.getUuid());
+        return Objects.equals(getKey(), that.getKey());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getUuid());
+        return Objects.hash(getKey());
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("uuid", uuid)
-                .add("name", name)
+                .add("id", id)
+                .add("translationKeyBase", key)
                 .add("parent", parent)
                 .add("children", children)
                 .toString();
     }
+
 }

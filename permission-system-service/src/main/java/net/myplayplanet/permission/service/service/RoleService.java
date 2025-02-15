@@ -100,7 +100,7 @@ public class RoleService {
 
         for (final Permission granted : role.getGranted()) {
             for (final Permission denied : role.getDenied()) {
-                if (granted.getUuid().equals(denied.getUuid())) {
+                if (granted.getKey().equals(denied.getKey())) {
                     return granted;
                 }
             }
@@ -147,10 +147,10 @@ public class RoleService {
 
         for (Role role : sorted) {
             for (Permission permission : role.getGranted()) {
-                set.add(createExtensivePermissionDto(permission.getUuid(), PermissionValue.GRANTED, role));
+                set.add(createExtensivePermissionDto(permission.getKey(), PermissionValue.GRANTED, role));
             }
             for (Permission permission : role.getDenied()) {
-                set.add(createExtensivePermissionDto(permission.getUuid(), PermissionValue.DENIED, role));
+                set.add(createExtensivePermissionDto(permission.getKey(), PermissionValue.DENIED, role));
             }
         }
 
@@ -158,7 +158,7 @@ public class RoleService {
 
     }
 
-    private ExtensivePermissionDto createExtensivePermissionDto(UUID key, PermissionValue permissionValue, Role role) {
+    private ExtensivePermissionDto createExtensivePermissionDto(String key, PermissionValue permissionValue, Role role) {
         return new ExtensivePermissionDto(new PermissionDto(key, permissionValue),
                 PermissionOrigin.ROLE, entityMapper.roleToRoleDto(role));
     }
@@ -172,12 +172,12 @@ public class RoleService {
 
         for (Role role : sorted) {
             for (Permission permission : role.getGranted()) {
-                if (set.contains(permission.getUuid())) continue;
-                set.add(permission.getUuid(), PermissionValue.GRANTED);
+                if (set.contains(permission.getKey())) continue;
+                set.add(permission.getKey(), PermissionValue.GRANTED);
             }
             for (Permission permission : role.getDenied()) {
-                if (set.contains(permission.getUuid())) continue;
-                set.add(permission.getUuid(), PermissionValue.DENIED);
+                if (set.contains(permission.getKey())) continue;
+                set.add(permission.getKey(), PermissionValue.DENIED);
             }
         }
 

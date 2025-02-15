@@ -13,6 +13,7 @@ public class RoleDto {
 
     private Long key;
     private String name;
+    private String description;
     private Integer weight;
     private Set<PermissionDto> permissions;
     private Boolean editable;

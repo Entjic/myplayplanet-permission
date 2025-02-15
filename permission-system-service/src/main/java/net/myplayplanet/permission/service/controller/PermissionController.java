@@ -21,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class PermissionController {
 
     private final EntityMapper entityMapper;
 
-    @PostMapping("save/")
+    @PostMapping("save")
     @Operation(summary = "Create a new permission.", description = "This endpoint is used to create a new permission.")
     @ApiResponses({
             @ApiResponse(content = @Content(schema = @Schema(implementation = PermissionInfoDto.class)),
@@ -47,13 +48,12 @@ public class PermissionController {
     })
     public PermissionInfoDto createPermission(@RequestBody PermissionInfoDto permissionInfoDto) {
         Permission permission = this.permissionService.saveNewPermission(permissionInfoDto.getKey(),
-                permissionInfoDto.getName(),
-                permissionInfoDto.getParent(), permissionInfoDto.getScope());
+                permissionInfoDto.getParent());
 
         return entityMapper.permissionToPermissionInfoDto(permission);
     }
 
-    @PostMapping("update/")
+    @PostMapping("update")
     @Operation(summary = "Update an existing permission.", description = "This endpoint is used to update an already existing permission.")
     @ApiResponses({
             @ApiResponse(content = @Content(schema = @Schema(implementation = PermissionInfoDto.class)),
@@ -65,14 +65,13 @@ public class PermissionController {
     })
     public PermissionInfoDto updatePermission(@RequestBody PermissionInfoDto permissionInfoDto) {
         Permission permission = this.permissionService.updateExistingPermission(permissionInfoDto.getKey(),
-                permissionInfoDto.getName(),
-                permissionInfoDto.getParent(), permissionInfoDto.getScope());
+                permissionInfoDto.getParent());
 
         return entityMapper.permissionToPermissionInfoDto(permission);
     }
 
 
-    @DeleteMapping("delete/{uuid}/mode/{mode}")
+    @DeleteMapping("delete/{key}/mode/{mode}")
     @Operation(summary = "Delete permission.", description = "This endpoint is used to delete a permission. " +
             "There are 3 different modes: Shallow simply deletes the permission, at the risk of ripping a hole in the permission tree. " +
             "Intelligent fixes that hole, by connecting all children of the deleted permission to the deleted permissions parent. " +
@@ -83,11 +82,11 @@ public class PermissionController {
             @ApiResponse(content = @Content(schema = @Schema(implementation = ResponseStatusException.class)),
                     responseCode = "404", description = "The referenced permission does not exist.")
     })
-    public Set<UUID> deletePermission(@Parameter(description = "The UUID of the permission", required = true)
-                                      @PathVariable UUID uuid,
-                                      @Parameter(description = "The mode used for deleting the permission.", required = true)
-                                      @PathVariable DeletionMode mode) {
-        return this.permissionService.delete(Set.of(uuid), mode);
+    public Set<String> deletePermission(@Parameter(description = "The key of the permission", required = true)
+                                        @PathVariable String key,
+                                        @Parameter(description = "The mode used for deleting the permission.", required = true)
+                                        @PathVariable DeletionMode mode) {
+        return this.permissionService.delete(Set.of(key), mode);
     }
 
     @Operation(summary = "Check if user has permission.", description = "This endpoint checks if a specified user has a certain permission.")
@@ -97,7 +96,7 @@ public class PermissionController {
                                  @Parameter(description = "The UUID of the user")
                                  @PathVariable UUID user,
                                  @Parameter(description = "The UUID of the permission")
-                                 @PathVariable UUID permission) {
+                                 @PathVariable String permission) {
         return this.permissionService.hasPermission(this.userService.findUserOrThrow(
                         this.scopeService.findScopeOrThrow(scope),
                         user),
@@ -105,18 +104,23 @@ public class PermissionController {
     }
 
 
-    @Operation(summary = "Fetches all existing permissions.", operationId = "getAllPermissions")
-    @GetMapping("all/")
-    public Set<PermissionDisplayDto> getAllPermissions() {
-        return this.entityMapper.permissionsToPermissionDisplayDtos(
-                this.permissionService.getAll());
+    @Operation(summary = "Fetches all existing permissions in a scope.", operationId = "getAllPermissionsByScope")
+    @GetMapping("{scope}")
+    public Set<String> getAllPermissionsByScope(@PathVariable Long scope) {
+        return this.permissionService.getAllByScope(scope).stream().map(Permission::getKey).collect(Collectors.toSet());
     }
 
-    @Operation(summary = "Fetches a permissions by its id.", operationId = "getPermissionById")
-    @GetMapping("{uuid}/")
-    public PermissionDisplayDto getById(@PathVariable UUID uuid) {
+    @Operation(summary = "Fetches a permissions by its key.", operationId = "getPermissionByKey")
+    @GetMapping("{key}")
+    public PermissionDisplayDto getByKey(@PathVariable String key) {
         return this.entityMapper.permissionToPermissionDisplayDto(
-                this.permissionService.findPermissionOrThrow(uuid));
+                this.permissionService.findPermissionOrThrow(key));
     }
+
+    @PostMapping("{key}/scope/{scope}")
+    public void addPermissionToScope(@PathVariable String key, @PathVariable Long scope) {
+        this.permissionService.addToScope(key, scope);
+    }
+
 
 }

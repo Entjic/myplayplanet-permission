@@ -36,12 +36,12 @@ public class EffectivePermissionModelTest {
 
     @Autowired
     private EntityMapper entityMapper;
-    private final Scope scope = new Scope(1L, "TestScope");
 
-    private final Permission permissionA = new Permission(UUID.randomUUID(), scope, "A", null, null);
-    private final Permission permissionB = new Permission(UUID.randomUUID(), scope, "B", null, null);
-    private final Permission permissionC = new Permission(UUID.randomUUID(), scope, "C", null, null);
+    private final Permission permissionA = new Permission("test.permission.a");
+    private final Permission permissionB = new Permission("test.permission.b");
+    private final Permission permissionC = new Permission("test.permission.c");
 
+    private final Scope scope = new Scope(1L, "TestScope", Set.of(permissionA, permissionB, permissionC));
 
     private UserService mockUserService() {
         UserRepository userRepository = Mockito.mock(UserRepository.class);
@@ -145,14 +145,14 @@ public class EffectivePermissionModelTest {
         Set<Permission> granted = Set.of(this.permissionA, this.permissionC);
         Set<Permission> denied = Set.of(this.permissionB);
 
-        return new Role(1L, scope, "rolle", 100, granted, denied, false);
+        return new Role(scope, "rolle", 100, granted, denied);
     }
 
     private Role generateRoleB() {
         Set<Permission> granted = Set.of(this.permissionB, this.permissionC);
         Set<Permission> denied = Set.of(this.permissionA);
 
-        return new Role(2L, scope, "andere rolle", 50, granted, denied, false);
+        return new Role(scope, "andere rolle", 50, granted, denied);
     }
 
 }

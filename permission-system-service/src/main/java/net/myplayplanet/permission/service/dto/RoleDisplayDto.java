@@ -11,5 +11,7 @@ public class RoleDisplayDto {
 
     private Long id;
     private String name;
+    private String description;
+    private Integer weight;
 
 }

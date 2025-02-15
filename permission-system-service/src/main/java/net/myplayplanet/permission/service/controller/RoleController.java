@@ -60,7 +60,7 @@ public class RoleController {
 
     @PostMapping("{id}/permission/")
     public RoleDto setPermission(@PathVariable Long id, @RequestBody PermissionDto permissionDto) {
-        Permission permission = this.permissionService.findPermissionOrThrow(permissionDto.getUuid());
+        Permission permission = this.permissionService.findPermissionOrThrow(permissionDto.getKey());
         return entityMapper.roleToRoleDto(this.roleService.setPermission(id, permission, permissionDto.getPermissionValue()));
     }
 

@@ -12,13 +12,13 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PermissionDto {
 
-    private UUID uuid;
+    private String key;
     private PermissionValue permissionValue;
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("uuid", uuid)
+                .add("key", key)
                 .add("permissionValue", permissionValue)
                 .toString();
     }

@@ -70,14 +70,14 @@ public class UserService {
     private ExtensivePermissionSet calcExtensivePermissionSet(User user) {
         final ExtensivePermissionSet set = roleService.getExtensivEffectivePermissions(user.getRoles());
 
-        final Map<UUID, ExtensivePermissionDto> map = set.toMap();
+        final Map<String, ExtensivePermissionDto> map = set.toMap();
 
         for (Permission permission : user.getGranted()) {
 
-            if (map.containsKey(permission.getUuid())) {
-                PermissionValue permissionValue = map.get(permission.getUuid()).getPermissionDto().getPermissionValue();
+            if (map.containsKey(permission.getKey())) {
+                PermissionValue permissionValue = map.get(permission.getKey()).getPermissionDto().getPermissionValue();
                 if (!permissionValue.equals(PermissionValue.GRANTED)) {
-                    map.put(permission.getUuid(), generateExtensivePermissionDto(permission.getUuid(),
+                    map.put(permission.getKey(), generateExtensivePermissionDto(permission.getKey(),
                             PermissionValue.GRANTED));
                 }
             }
@@ -85,10 +85,10 @@ public class UserService {
 
         for (Permission permission : user.getDenied()) {
 
-            if (map.containsKey(permission.getUuid())) {
-                PermissionValue permissionValue = map.get(permission.getUuid()).getPermissionDto().getPermissionValue();
+            if (map.containsKey(permission.getKey())) {
+                PermissionValue permissionValue = map.get(permission.getKey()).getPermissionDto().getPermissionValue();
                 if (!permissionValue.equals(PermissionValue.DENIED)) {
-                    map.put(permission.getUuid(), generateExtensivePermissionDto(permission.getUuid(),
+                    map.put(permission.getKey(), generateExtensivePermissionDto(permission.getKey(),
                             PermissionValue.DENIED));
                 }
             }
@@ -98,21 +98,21 @@ public class UserService {
 
     }
 
-    private ExtensivePermissionDto generateExtensivePermissionDto(UUID uuid, PermissionValue permissionValue) {
-        return new ExtensivePermissionDto(new PermissionDto(uuid, permissionValue), PermissionOrigin.SPECIFIC, null);
+    private ExtensivePermissionDto generateExtensivePermissionDto(String key, PermissionValue permissionValue) {
+        return new ExtensivePermissionDto(new PermissionDto(key, permissionValue), PermissionOrigin.SPECIFIC, null);
     }
 
     public PermissionSet calcPermissionSet(User user) {
         final PermissionSet rolePermissionDtos = roleService.getEffectivePermissions(user.getRoles(), user.getScope().getId());
 
-        final Map<UUID, PermissionValue> map = rolePermissionDtos.toMap();
+        final Map<String, PermissionValue> map = rolePermissionDtos.toMap();
 
         for (Permission permission : user.getGranted()) {
-            map.put(permission.getUuid(), PermissionValue.GRANTED);
+            map.put(permission.getKey(), PermissionValue.GRANTED);
         }
 
         for (Permission permission : user.getDenied()) {
-            map.put(permission.getUuid(), PermissionValue.DENIED);
+            map.put(permission.getKey(), PermissionValue.DENIED);
         }
 
         return new PermissionSet(map, user.getScope().getId());

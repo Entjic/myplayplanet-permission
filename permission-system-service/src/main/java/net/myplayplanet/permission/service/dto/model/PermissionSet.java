@@ -18,31 +18,31 @@ public class PermissionSet extends HashSet<PermissionDto> {
         this.scope = scope;
     }
 
-    public PermissionSet(Map<UUID, PermissionValue> map, final Long scope) {
+    public PermissionSet(Map<String, PermissionValue> map, final Long scope) {
         super();
         this.scope = scope;
-        for (Map.Entry<UUID, PermissionValue> uuidPermissionValueEntry : map.entrySet()) {
-            this.add(uuidPermissionValueEntry.getKey(), uuidPermissionValueEntry.getValue());
+        for (Map.Entry<String, PermissionValue> keyPermissionValueEntry : map.entrySet()) {
+            this.add(keyPermissionValueEntry.getKey(), keyPermissionValueEntry.getValue());
         }
     }
 
-    public boolean add(UUID uuid, PermissionValue permissionValue) {
-        return this.add(new PermissionDto(uuid, permissionValue));
+    public boolean add(String key, PermissionValue permissionValue) {
+        return this.add(new PermissionDto(key, permissionValue));
     }
 
-    public boolean contains(UUID uuid) {
+    public boolean contains(String key) {
         for (final PermissionDto permissionDto : this) {
-            if (permissionDto.getUuid().equals(uuid)) {
+            if (permissionDto.getKey().equals(key)) {
                 return true;
             }
         }
         return false;
     }
 
-    public Map<UUID, PermissionValue> toMap() {
-        Map<UUID, PermissionValue> map = new HashMap<>();
+    public Map<String, PermissionValue> toMap() {
+        Map<String, PermissionValue> map = new HashMap<>();
         for (PermissionDto permissionDto : this) {
-            map.put(permissionDto.getUuid(), permissionDto.getPermissionValue());
+            map.put(permissionDto.getKey(), permissionDto.getPermissionValue());
         }
         return map;
     }

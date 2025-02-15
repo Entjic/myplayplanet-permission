@@ -21,8 +21,11 @@ import java.util.Collection;
 public class PermissionRegisterProcessor {
     private final Collection<PermissionAutoRegister> autoRegisters;
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final ScopeClient scopeClient;
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final PermissionClient permissionClient;
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     private final RoleClient roleClient;
 
     @PostConstruct
@@ -32,20 +35,6 @@ public class PermissionRegisterProcessor {
         }
     }
 
-    private Mono<PermissionInfoDto> savePermission(final PermissionInfoDto autoRegisterPermission) {
-        return this.permissionClient.createPermission(autoRegisterPermission)
-                .onErrorResume(throwable -> {
-                    if (!(throwable instanceof CustomErrorResponse customErrorResponse))
-                        return Mono.error(throwable);
-
-                    if (customErrorResponse.getStatus() == 409) return Mono.empty();
-                    return Mono.error(throwable);
-                })
-                .doOnSuccess(permissionInfoDto -> {
-                    log.info("Initialized permission {}", permissionInfoDto);
-                });
-
-    }
 
     public Mono<Void> createDefaults(PermissionAutoRegister autoRegister) {
         ScopeDto scope = autoRegister.permissionScope();
@@ -59,7 +48,7 @@ public class PermissionRegisterProcessor {
 
 
         for (final PermissionInfoDto permission : autoRegister.permissions()) {
-            scopeMono = scopeMono.flatMap(scopeDto -> savePermission(permission).then(Mono.just(scopeDto)));
+            scopeMono = scopeMono.flatMap(scopeDto -> savePermission(permission, scope.getId()).then(Mono.just(scopeDto)));
         }
 
         for (final RoleDto defaultRole : autoRegister.defaultRoles()) {
@@ -68,6 +57,23 @@ public class PermissionRegisterProcessor {
         }
 
         return scopeMono.doOnSuccess(scopeDto -> log.info("Successfully initialized permission things")).then();
+    }
+
+    private Mono<PermissionInfoDto> savePermission(final PermissionInfoDto permission, final Long scope) {
+        return this.permissionClient.createPermission(permission)
+                .onErrorResume(throwable -> {
+                    if (!(throwable instanceof CustomErrorResponse customErrorResponse))
+                        return Mono.error(throwable);
+
+                    if (customErrorResponse.getStatus() == 409) return Mono.just(permission)
+                            .flatMap(permissionInfoDto -> this.permissionClient.addPermissionToScope(permissionInfoDto.getKey(), scope))
+                            .then(Mono.just(permission));
+                    return Mono.error(throwable);
+                })
+                .doOnSuccess(permissionInfoDto -> {
+                    log.info("Initialized permission {}", permissionInfoDto);
+                });
+
     }
 
     private Mono<RoleDto> saveRole(final RoleDto defaultRole, final ScopeDto scopeDto) {

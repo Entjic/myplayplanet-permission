@@ -12,11 +12,20 @@ import org.mapstruct.Mapping;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface EntityMapper {
 
     Set<Permission> permissionDtosToPermissions(Set<PermissionDto> permissionDtoSet);
+
+    default Permission permissionDtoToPermission(PermissionDto permissionDto) {
+        Permission permission = new Permission();
+
+        String key = permissionDto.getKey();
+        permission.setKey(key);
+        return permission;
+    }
 
     default Long map(Scope scope) {
         return scope.getId();
@@ -29,9 +38,14 @@ public interface EntityMapper {
 
     PermissionDto permissionToPermissionDto(Permission permission, PermissionValue permissionValue);
 
+    @Mapping(source = "permission.parent.key", target = "parent")
     PermissionDisplayDto permissionToPermissionDisplayDto(Permission permission);
 
     Set<PermissionDisplayDto> permissionsToPermissionDisplayDtos(Collection<Permission> permissions);
+
+    default Set<String> mapPermissionsToKeys(Set<Permission> permissions) {
+        return permissions.stream().map(Permission::getKey).collect(Collectors.toSet());
+    }
 
     default RoleDto roleToRoleDto(Role role) {
         RoleDto roleDto = new RoleDto();
@@ -48,6 +62,7 @@ public interface EntityMapper {
         roleDto.setKey(role.getId());
         roleDto.setWeight(role.getWeight());
         roleDto.setPermissions(permissions);
+        roleDto.setDescription(role.getDescription());
 
         return roleDto;
     }
@@ -59,7 +74,7 @@ public interface EntityMapper {
         final Set<Permission> deniedPermissions = new HashSet<>();
 
         for (PermissionDto permission : roleDto.getPermissions()) {
-            Permission obj = new Permission(permission.getUuid(), scope, null, null, null);
+            Permission obj = new Permission(permission.getKey());
             if (permission.getPermissionValue().equals(PermissionValue.GRANTED)) {
                 grantedPermissions.add(obj);
             }
@@ -74,7 +89,8 @@ public interface EntityMapper {
                 roleDto.getWeight(),
                 grantedPermissions,
                 deniedPermissions,
-                roleDto.getEditable());
+                roleDto.getEditable(),
+                roleDto.getDescription());
     }
 
     default UserDto userToUserDto(User user) {
@@ -100,14 +116,10 @@ public interface EntityMapper {
 
     Set<UserDto> usersToUserDtos(Set<User> users);
 
-    @Mapping(source = "permission.parent.uuid", target = "parent")
-    @Mapping(source = "permission.uuid", target = "key")
-    @Mapping(source = "permission.scope.id", target = "scope")
+    @Mapping(source = "permission.parent.key", target = "parent")
     PermissionInfoDto permissionToPermissionInfoDto(Permission permission);
 
     ScopeDto mapScopeToScopeDto(Scope scope);
-
-    Scope mapScopeDtoToScope(ScopeDto scopeDto);
 
     Set<ScopeDto> mapScopesToScopeDtos(Collection<Scope> scopes);
 
