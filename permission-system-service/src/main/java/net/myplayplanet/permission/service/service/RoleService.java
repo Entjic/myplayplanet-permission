@@ -159,7 +159,7 @@ public class RoleService {
     }
 
     private ExtensivePermissionDto createExtensivePermissionDto(UUID key, PermissionValue permissionValue, Role role) {
-        return new ExtensivePermissionDto(new PermissionDto(key, role.getScope().getId(), permissionValue),
+        return new ExtensivePermissionDto(new PermissionDto(key, permissionValue),
                 PermissionOrigin.ROLE, entityMapper.roleToRoleDto(role));
     }
 

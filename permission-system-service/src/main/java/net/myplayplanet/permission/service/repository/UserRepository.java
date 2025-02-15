@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Collection<User> findAllByScope(Scope scope);
 
+    Collection<User> findAllByUuid(UUID uuid);
+
 }

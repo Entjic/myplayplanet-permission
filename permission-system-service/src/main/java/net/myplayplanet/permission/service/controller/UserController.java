@@ -3,6 +3,7 @@ package net.myplayplanet.permission.service.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import net.myplayplanet.permission.service.dto.ScopeDto;
 import net.myplayplanet.permission.service.dto.effective.EffectiveUserModelDto;
 import net.myplayplanet.permission.service.dto.effective.ExtensiveEffectiveUserModelDto;
 import net.myplayplanet.permission.service.dto.UserDto;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/permission/user/")
@@ -62,6 +64,14 @@ public class UserController {
                 this.scopeService.findScopeOrThrow(scope), uuid);
         Role role = this.roleService.findOrThrow(roleId);
         return this.entityMapper.userToUserDto(this.userService.removeRole(user, role));
+    }
+
+    @GetMapping("user/{uuid}/scopes")
+    public Set<Long> scopesByUser(@PathVariable UUID uuid) {
+        return this.userService.findUsersByUUID(uuid)
+                .stream().map(User::getScope)
+                .map(this.entityMapper::map)
+                .collect(Collectors.toSet());
     }
 
 

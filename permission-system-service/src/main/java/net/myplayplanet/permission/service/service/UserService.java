@@ -19,10 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 @Service
@@ -81,7 +78,7 @@ public class UserService {
                 PermissionValue permissionValue = map.get(permission.getUuid()).getPermissionDto().getPermissionValue();
                 if (!permissionValue.equals(PermissionValue.GRANTED)) {
                     map.put(permission.getUuid(), generateExtensivePermissionDto(permission.getUuid(),
-                            PermissionValue.GRANTED, user.getScope().getId()));
+                            PermissionValue.GRANTED));
                 }
             }
         }
@@ -92,7 +89,7 @@ public class UserService {
                 PermissionValue permissionValue = map.get(permission.getUuid()).getPermissionDto().getPermissionValue();
                 if (!permissionValue.equals(PermissionValue.DENIED)) {
                     map.put(permission.getUuid(), generateExtensivePermissionDto(permission.getUuid(),
-                            PermissionValue.DENIED, user.getScope().getId()));
+                            PermissionValue.DENIED));
                 }
             }
         }
@@ -101,8 +98,8 @@ public class UserService {
 
     }
 
-    private ExtensivePermissionDto generateExtensivePermissionDto(UUID uuid, PermissionValue permissionValue, Long scope) {
-        return new ExtensivePermissionDto(new PermissionDto(uuid, scope, permissionValue), PermissionOrigin.SPECIFIC, null);
+    private ExtensivePermissionDto generateExtensivePermissionDto(UUID uuid, PermissionValue permissionValue) {
+        return new ExtensivePermissionDto(new PermissionDto(uuid, permissionValue), PermissionOrigin.SPECIFIC, null);
     }
 
     public PermissionSet calcPermissionSet(User user) {
@@ -119,6 +116,10 @@ public class UserService {
         }
 
         return new PermissionSet(map, user.getScope().getId());
+    }
+
+    public Collection<User> findUsersByUUID(UUID user){
+        return this.userRepository.findAllByUuid(user);
     }
 
 }

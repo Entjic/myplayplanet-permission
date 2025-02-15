@@ -13,7 +13,6 @@ import java.util.UUID;
 public class PermissionDto {
 
     private UUID uuid;
-    private Long scope;
     private PermissionValue permissionValue;
 
     @Override
