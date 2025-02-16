@@ -60,6 +60,7 @@ public interface EntityMapper {
         }
 
         roleDto.setKey(role.getId());
+        roleDto.setName(role.getName());
         roleDto.setWeight(role.getWeight());
         roleDto.setPermissions(permissions);
         roleDto.setDescription(role.getDescription());
