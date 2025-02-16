@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class RoleDto {
 
-    private Long key;
+    private Long id;
     private String name;
     private String description;
     private Integer weight;

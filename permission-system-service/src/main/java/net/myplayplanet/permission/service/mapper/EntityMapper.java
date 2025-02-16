@@ -59,7 +59,7 @@ public interface EntityMapper {
             permissions.add(permissionToPermissionDto(permission, PermissionValue.DENIED));
         }
 
-        roleDto.setKey(role.getId());
+        roleDto.setId(role.getId());
         roleDto.setName(role.getName());
         roleDto.setWeight(role.getWeight());
         roleDto.setPermissions(permissions);
@@ -85,7 +85,7 @@ public interface EntityMapper {
             }
         }
 
-        return new Role(roleDto.getKey(),
+        return new Role(roleDto.getId(),
                 scope,
                 roleDto.getName(),
                 roleDto.getWeight(),
