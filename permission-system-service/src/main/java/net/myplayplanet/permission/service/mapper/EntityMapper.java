@@ -75,13 +75,15 @@ public interface EntityMapper {
         final Set<Permission> grantedPermissions = new HashSet<>();
         final Set<Permission> deniedPermissions = new HashSet<>();
 
-        for (PermissionDto permission : roleDto.getPermissions()) {
-            Permission obj = new Permission(permission.getKey());
-            if (permission.getPermissionValue().equals(PermissionValue.GRANTED)) {
-                grantedPermissions.add(obj);
-            }
-            if (permission.getPermissionValue().equals(PermissionValue.DENIED)) {
-                deniedPermissions.add(obj);
+        if (roleDto.getPermissions() != null) {
+            for (PermissionDto permission : roleDto.getPermissions()) {
+                Permission obj = new Permission(permission.getKey());
+                if (permission.getPermissionValue().equals(PermissionValue.GRANTED)) {
+                    grantedPermissions.add(obj);
+                }
+                if (permission.getPermissionValue().equals(PermissionValue.DENIED)) {
+                    deniedPermissions.add(obj);
+                }
             }
         }
 
