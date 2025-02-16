@@ -64,10 +64,17 @@ public class RoleController {
         return entityMapper.roleToRoleDto(this.roleService.setPermission(id, permission, permissionDto.getPermissionValue()));
     }
 
-    @Operation(operationId = "getAllRoles")
-    @GetMapping("{scope}/all/")
+    @Operation(operationId = "getAllRoleIdsByScope")
+    @GetMapping("{scope}/all/ids")
     public Set<Long> getAllRoleIdsByScope(@PathVariable Long scope) {
-        return this.roleService.getAll(this.scopeService.findScopeOrThrow(scope));
+        return this.roleService.getAllIds(this.scopeService.findScopeOrThrow(scope));
+    }
+
+    @Operation(operationId = "getAllRoleIds")
+    @GetMapping("{scope}/all")
+    public Set<RoleDto> getAllRolesByScope(@PathVariable Long scope) {
+        return this.roleService.getAllRoles(this.scopeService.findScopeOrThrow(scope)).stream()
+                .map(this.entityMapper::roleToRoleDto).collect(Collectors.toSet());
     }
 
     @Operation(operationId = "getByName")
@@ -79,7 +86,7 @@ public class RoleController {
 
     @GetMapping("ids/")
     public Collection<Long> getAllRoleIds() {
-        return this.roleService.getAll().stream()
+        return this.roleService.getAllIds().stream()
                 .map(Role::getId)
                 .collect(Collectors.toSet());
     }

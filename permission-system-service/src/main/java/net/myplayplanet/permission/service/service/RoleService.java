@@ -33,15 +33,19 @@ public class RoleService {
         return roleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    public Collection<Role> getAll() {
+    public Collection<Role> getAllIds() {
         return this.roleRepository.findAll();
     }
 
-    public Set<Long> getAll(Scope scope) {
+    public Set<Long> getAllIds(Scope scope) {
         return this.roleRepository.findAllByScope(scope)
                 .stream()
                 .map(Role::getId)
                 .collect(Collectors.toSet());
+    }
+
+    public Collection<Role> getAllRoles(Scope scope) {
+        return this.roleRepository.findAllByScope(scope);
     }
 
     public Role getByName(Scope scope, String name) {
