@@ -60,8 +60,9 @@ public class RoleController {
     }
 
     @DeleteMapping("delete/{id}")
-    public Long deleteRole(@PathVariable Long id) {
-        return this.roleService.delete(id);
+    public RoleDto deleteRole(@PathVariable Long id) {
+        Role role =  this.roleService.delete(id);
+        return entityMapper.roleToRoleDto(role);
     }
 
     @PostMapping("{id}/weight")

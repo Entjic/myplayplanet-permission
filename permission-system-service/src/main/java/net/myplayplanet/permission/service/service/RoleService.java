@@ -143,10 +143,10 @@ public class RoleService {
         }
     }
 
-    public Long delete(long id) {
+    public Role delete(long id) {
         Role role = this.findOrThrow(id);
         this.roleRepository.delete(role);
-        return id;
+        return role;
     }
 
 
