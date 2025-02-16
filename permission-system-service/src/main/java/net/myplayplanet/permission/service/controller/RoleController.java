@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/v1/permission/role/")
+@RequestMapping("/api/v1/permission/role/")
 @Tag(name = "Role")
 public class RoleController {
 

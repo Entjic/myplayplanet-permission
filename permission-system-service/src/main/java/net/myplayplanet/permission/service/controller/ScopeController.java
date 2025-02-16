@@ -12,7 +12,7 @@ import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/permission/scope/")
+@RequestMapping("/api/v1/permission/scope/")
 @Tag(name = "Scope")
 public class ScopeController {
 
