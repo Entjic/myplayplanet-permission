@@ -77,7 +77,7 @@ public class PermissionRegisterProcessor {
     }
 
     private Mono<RoleDto> saveRole(final RoleDto defaultRole, final ScopeDto scopeDto) {
-        return this.roleClient.alterOrCreateRole(scopeDto.getId(), defaultRole)
+        return this.roleClient.updateRole(scopeDto.getId(), defaultRole)
                 .doOnSuccess(role -> {
                     log.info("Initialized role {}", role);
                 });

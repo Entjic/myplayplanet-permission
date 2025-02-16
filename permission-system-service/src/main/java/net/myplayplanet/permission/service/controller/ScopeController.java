@@ -27,17 +27,17 @@ public class ScopeController {
     }
 
     @PostMapping("get-or-create")
-    public ScopeDto getOrCreateScope(@RequestBody ScopeDto scopeDto) {
-        return this.entityMapper.mapScopeToScopeDto(this.scopeService.createOrFind(scopeDto.getName()));
+    public ScopeDto getOrCreateScope(@RequestBody String name) {
+        return this.entityMapper.mapScopeToScopeDto(this.scopeService.createOrFind(name));
     }
 
-    @PostMapping("create/{name}")
-    public ScopeDto create(@PathVariable String name) {
+    @PostMapping
+    public ScopeDto create(@RequestBody String name) {
         return this.entityMapper.mapScopeToScopeDto(this.scopeService.create(name));
     }
 
-    @PostMapping("rename/{id}/name/{name}")
-    public ScopeDto rename(@PathVariable Long id, @PathVariable String name) {
+    @PutMapping("rename/{id}")
+    public ScopeDto rename(@PathVariable Long id, @RequestBody String name) {
         return this.entityMapper.mapScopeToScopeDto(this.scopeService.rename(id, name));
     }
 

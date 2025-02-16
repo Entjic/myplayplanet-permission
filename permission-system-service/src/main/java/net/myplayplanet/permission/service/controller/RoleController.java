@@ -36,14 +36,15 @@ public class RoleController {
         return this.entityMapper.roleToRoleDisplayDto(this.roleService.findOrThrow(id));
     }
 
-    @PostMapping("{scope}/create")
+    @PostMapping("{scope}")
     public RoleDto createRole(@PathVariable Long scope, @RequestBody RoleDto roleDto) {
         Role role = entityMapper.roleDtoToRole(roleDto, this.scopeService.findScopeOrThrow(scope));
         return entityMapper.roleToRoleDto(this.roleService.save(role));
     }
 
-    @PostMapping("{scope}/alter-or-create")
-    public RoleDto alterOrCreateRole(@PathVariable Long scope, @RequestBody RoleDto roleDto) {
+    @PutMapping("{scope}")
+    @Operation(summary = "Update or create an existing role of a scope.", description = "This endpoint is used to update an already existing role inside a scope. If the role does not exist it will be created.")
+    public RoleDto updateRole(@PathVariable Long scope, @RequestBody RoleDto roleDto) {
         Role role = entityMapper.roleDtoToRole(roleDto, this.scopeService.findScopeOrThrow(scope));
         return entityMapper.roleToRoleDto(this.roleService.alterOrCreate(role));
     }
@@ -65,7 +66,7 @@ public class RoleController {
     }
 
     @Operation(operationId = "getAllRoleIdsByScope")
-    @GetMapping("{scope}/all/ids")
+    @GetMapping("{scope}/all/id")
     public Set<Long> getAllRoleIdsByScope(@PathVariable Long scope) {
         return this.roleService.getAllIds(this.scopeService.findScopeOrThrow(scope));
     }
@@ -84,7 +85,7 @@ public class RoleController {
         return entityMapper.roleToRoleDto(role);
     }
 
-    @GetMapping("ids")
+    @GetMapping("all/id")
     public Collection<Long> getAllRoleIds() {
         return this.roleService.getAllIds().stream()
                 .map(Role::getId)

@@ -6,12 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.Type;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.SqlTypes;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -37,13 +36,18 @@ public class User {
     private Scope scope;
 
     @OneToMany
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany
-    private Set<Permission> granted;
+    private Set<Permission> granted = new HashSet<>();
 
     @OneToMany
-    private Set<Permission> denied;
+    private Set<Permission> denied = new HashSet<>();
+
+    public User(UUID uuid, Scope scope) {
+        this.uuid = uuid;
+        this.scope = scope;
+    }
 
     @Override
     public String toString() {

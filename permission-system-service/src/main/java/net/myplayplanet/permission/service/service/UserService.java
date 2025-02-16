@@ -35,6 +35,10 @@ public class UserService {
         return this.userRepository.findByScopeAndUuid(scope, uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    public User findOrCreateUser(Scope scope, UUID uuid) {
+        return this.userRepository.findByScopeAndUuid(scope, uuid).orElse(new User(uuid, scope));
+    }
+
     public Set<User> getAll(Scope scope) {
         return new HashSet<>(this.userRepository.findAllByScope(scope));
     }

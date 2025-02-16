@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @Operation(operationId = "getAllUsersByScope")
-    @GetMapping("{scope}/all")
+    @GetMapping("{scope}")
     public Set<UserDto> getAll(@PathVariable Long scope) {
         return this.entityMapper.usersToUserDtos(this.userService.getAll(
                 this.scopeService.findScopeOrThrow(scope)));
@@ -51,7 +51,7 @@ public class UserController {
 
     @PostMapping("{scope}/role/add/{roleId}/user/{uuid}")
     public UserDto addRole(@PathVariable Long scope, @PathVariable UUID uuid, @PathVariable Long roleId) {
-        User user = this.userService.findUserOrThrow(
+        User user = this.userService.findOrCreateUser(
                 this.scopeService.findScopeOrThrow(scope), uuid);
         Role role = this.roleService.findOrThrow(roleId);
         return this.entityMapper.userToUserDto(this.userService.addRole(user, role));

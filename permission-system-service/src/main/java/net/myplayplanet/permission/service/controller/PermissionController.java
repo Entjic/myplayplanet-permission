@@ -36,7 +36,7 @@ public class PermissionController {
 
     private final EntityMapper entityMapper;
 
-    @PostMapping("save")
+    @PostMapping
     @Operation(summary = "Create a new permission.", description = "This endpoint is used to create a new permission.")
     @ApiResponses({
             @ApiResponse(content = @Content(schema = @Schema(implementation = PermissionInfoDto.class)),
@@ -53,7 +53,7 @@ public class PermissionController {
         return entityMapper.permissionToPermissionInfoDto(permission);
     }
 
-    @PostMapping("update")
+    @PutMapping
     @Operation(summary = "Update an existing permission.", description = "This endpoint is used to update an already existing permission.")
     @ApiResponses({
             @ApiResponse(content = @Content(schema = @Schema(implementation = PermissionInfoDto.class)),
