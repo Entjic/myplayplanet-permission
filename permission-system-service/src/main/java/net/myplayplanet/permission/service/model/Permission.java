@@ -31,7 +31,7 @@ public class Permission {
     @ManyToOne(fetch = FetchType.LAZY)
     private Permission parent;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
     private Set<Permission> children = new HashSet<>();
 
 
