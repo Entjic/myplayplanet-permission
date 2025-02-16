@@ -27,8 +27,8 @@ public class ScopeController {
     }
 
     @PostMapping("get-or-create")
-    public ScopeDto getOrCreateScope(@RequestBody String name) {
-        return this.entityMapper.mapScopeToScopeDto(this.scopeService.createOrFind(name));
+    public ScopeDto getOrCreateScope(@RequestBody ScopeDto scopeDto) {
+        return this.entityMapper.mapScopeToScopeDto(this.scopeService.createOrFind(scopeDto));
     }
 
     @PostMapping
@@ -36,7 +36,7 @@ public class ScopeController {
         return this.entityMapper.mapScopeToScopeDto(this.scopeService.create(name));
     }
 
-    @PutMapping("rename/{id}")
+    @PutMapping("{id}")
     public ScopeDto rename(@PathVariable Long id, @RequestBody String name) {
         return this.entityMapper.mapScopeToScopeDto(this.scopeService.rename(id, name));
     }

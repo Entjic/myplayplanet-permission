@@ -1,6 +1,7 @@
 package net.myplayplanet.permission.service.service;
 
 import lombok.RequiredArgsConstructor;
+import net.myplayplanet.permission.service.dto.ScopeDto;
 import net.myplayplanet.permission.service.model.Scope;
 import net.myplayplanet.permission.service.repository.ScopeRepository;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,9 +49,14 @@ public class ScopeService {
         this.scopeRepository.deleteById(id);
     }
 
-    public Scope createOrFind(final String name) {
-        Scope byName = this.scopeRepository.findByName(name);
-        if (byName == null) return this.create(name);
-        return byName;
+    public Scope createOrFind(final ScopeDto scopeDto) {
+        Optional<Scope> existing = Optional.empty();
+
+        if (scopeDto.getId() != null) {
+            existing = this.scopeRepository.findById(scopeDto.getId());
+        }
+
+        return existing.orElse(this.create(scopeDto.getName()));
+
     }
 }

@@ -48,7 +48,7 @@ public class PermissionRegisterProcessor {
 
 
         for (final PermissionInfoDto permission : autoRegister.permissions()) {
-            scopeMono = scopeMono.flatMap(scopeDto -> savePermission(permission, scope.getId()).then(Mono.just(scopeDto)));
+            scopeMono = scopeMono.flatMap(scopeDto -> savePermission(permission, scopeDto.getId()).then(Mono.just(scopeDto)));
         }
 
         for (final RoleDto defaultRole : autoRegister.defaultRoles()) {
