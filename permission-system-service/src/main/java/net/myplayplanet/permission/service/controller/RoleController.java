@@ -90,7 +90,6 @@ public class RoleController {
         return this.roleService.getAllIds(this.scopeService.findScopeOrThrow(scope));
     }
 
-    @Operation(operationId = "getAllRoleIds")
     @GetMapping("{scope}/all")
     public Set<RoleDto> getAllRolesByScope(@PathVariable Long scope) {
         return this.roleService.getAllRoles(this.scopeService.findScopeOrThrow(scope)).stream()
