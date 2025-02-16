@@ -53,6 +53,28 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User setUserSpecificPermission(User user, Permission permission, PermissionValue permissionValue) {
+        if (permissionValue.equals(PermissionValue.GRANTED)) {
+            user.getGranted().add(permission);
+            user.getDenied().remove(permission);
+        }
+        if (permissionValue.equals(PermissionValue.DENIED)) {
+            user.getDenied().add(permission);
+            user.getGranted().remove(permission);
+        }
+        if (permissionValue.equals(PermissionValue.NEUTRAL)) {
+            user.getGranted().remove(permission);
+            user.getDenied().remove(permission);
+        }
+        return userRepository.save(user);
+    }
+
+    public User clearUserSpecificPermissions(User user) {
+        user.getGranted().clear();
+        user.getDenied().clear();
+        return userRepository.save(user);
+    }
+
     public ExtensiveEffectiveUserModelDto getExtensiveEffectiveUserModel(User user) {
         final ExtensiveEffectiveUserModelDto extensiveEffectiveUserModelDto = new ExtensiveEffectiveUserModelDto();
 
@@ -122,7 +144,7 @@ public class UserService {
         return new PermissionSet(map, user.getScope().getId());
     }
 
-    public Collection<User> findUsersByUUID(UUID user){
+    public Collection<User> findUsersByUUID(UUID user) {
         return this.userRepository.findAllByUuid(user);
     }
 

@@ -3,12 +3,15 @@ package net.myplayplanet.permission.service.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import net.myplayplanet.permission.service.dto.PermissionDto;
+import net.myplayplanet.permission.service.dto.UserDto;
 import net.myplayplanet.permission.service.dto.effective.EffectiveUserModelDto;
 import net.myplayplanet.permission.service.dto.effective.ExtensiveEffectiveUserModelDto;
-import net.myplayplanet.permission.service.dto.UserDto;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
+import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;
 import net.myplayplanet.permission.service.model.User;
+import net.myplayplanet.permission.service.service.PermissionService;
 import net.myplayplanet.permission.service.service.RoleService;
 import net.myplayplanet.permission.service.service.ScopeService;
 import net.myplayplanet.permission.service.service.UserService;
@@ -27,6 +30,7 @@ public class UserController {
     private final UserService userService;
     private final RoleService roleService;
     private final ScopeService scopeService;
+    private final PermissionService permissionService;
 
     private final EntityMapper entityMapper;
 
@@ -71,6 +75,29 @@ public class UserController {
                 .stream().map(User::getScope)
                 .map(this.entityMapper::map)
                 .collect(Collectors.toSet());
+    }
+
+    @PostMapping("{scope}/user/{uuid}/permission")
+    public UserDto setUserSpecificPermission(@PathVariable Long scope, @PathVariable UUID uuid, @RequestBody PermissionDto permissionDto) {
+        User user = this.userService.findUserOrThrow(this.scopeService.findScopeOrThrow(scope), uuid);
+        Permission permission = this.permissionService.findPermissionOrThrow(permissionDto.getKey());
+        return this.entityMapper.userToUserDto(this.userService.setUserSpecificPermission(user, permission, permissionDto.getPermissionValue()));
+    }
+
+    @PostMapping("{scope}/user/{uuid}/permissions")
+    public UserDto setUserSpecificPermissions(@PathVariable Long scope, @PathVariable UUID uuid, @RequestBody Set<PermissionDto> permissionDtos) {
+        User user = this.userService.findUserOrThrow(this.scopeService.findScopeOrThrow(scope), uuid);
+        for (final PermissionDto permissionDto : permissionDtos) {
+            Permission permission = this.permissionService.findPermissionOrThrow(permissionDto.getKey());
+            user = this.userService.setUserSpecificPermission(user, permission, permissionDto.getPermissionValue());
+        }
+        return this.entityMapper.userToUserDto(user);
+    }
+
+    @DeleteMapping("{scope}/user/{uuid}/permissions")
+    public UserDto clearUserSpecificPermissions(@PathVariable Long scope, @PathVariable UUID uuid) {
+        User user = this.userService.findUserOrThrow(this.scopeService.findScopeOrThrow(scope), uuid);
+        return this.entityMapper.userToUserDto(this.userService.clearUserSpecificPermissions(user));
     }
 
 

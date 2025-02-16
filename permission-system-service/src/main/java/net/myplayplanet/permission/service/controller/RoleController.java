@@ -42,6 +42,16 @@ public class RoleController {
         return entityMapper.roleToRoleDto(this.roleService.save(role));
     }
 
+    @PostMapping("copy/{id}")
+    public RoleDto createFromExisting(@PathVariable Long id, @RequestBody RoleDisplayDto roleDto) {
+        Role template = this.roleService.findOrThrow(id);
+        return this.entityMapper.roleToRoleDto(this.roleService.createFromExisting(roleDto.getName(),
+                roleDto.getDescription(),
+                roleDto.getWeight(),
+                template));
+    }
+
+    // if applicable specific endpoint use is preferred, especially for granting / revoking permissions after initial creation!
     @PutMapping("{scope}")
     @Operation(summary = "Update or create an existing role of a scope.", description = "This endpoint is used to update an already existing role inside a scope. If the role does not exist it will be created.")
     public RoleDto updateRole(@PathVariable Long scope, @RequestBody RoleDto roleDto) {
@@ -63,6 +73,15 @@ public class RoleController {
     public RoleDto setPermission(@PathVariable Long id, @RequestBody PermissionDto permissionDto) {
         Permission permission = this.permissionService.findPermissionOrThrow(permissionDto.getKey());
         return entityMapper.roleToRoleDto(this.roleService.setPermission(id, permission, permissionDto.getPermissionValue()));
+    }
+
+    @PostMapping("{id}/permissions")
+    public RoleDto setPermissions(@PathVariable Long id, @RequestBody Collection<PermissionDto> permissionDtos) {
+        for (final PermissionDto permissionDto : permissionDtos) {
+            Permission permission = this.permissionService.findPermissionOrThrow(permissionDto.getKey());
+            this.roleService.setPermission(id, permission, permissionDto.getPermissionValue());
+        }
+        return this.entityMapper.roleToRoleDto(this.roleService.findOrThrow(id));
     }
 
     @Operation(operationId = "getAllRoleIdsByScope")

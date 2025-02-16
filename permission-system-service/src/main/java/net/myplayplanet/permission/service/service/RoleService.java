@@ -66,6 +66,12 @@ public class RoleService {
         return this.roleRepository.save(role);
     }
 
+    public Role createFromExisting(String name, String description, Integer weight, Role template) {
+        Role role = new Role(template.getScope(), name, weight, template.getGranted(), template.getDenied());
+        role.setDescription(description);
+        return this.save(role);
+    }
+
     public Role alterOrCreate(Role role) {
         if (role.getId() == null) {
             Optional<Role> existing = this.getByNameOptional(role.getScope(), role.getName());
