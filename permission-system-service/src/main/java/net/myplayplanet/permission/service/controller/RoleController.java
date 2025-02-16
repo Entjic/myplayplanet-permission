@@ -31,34 +31,34 @@ public class RoleController {
     private final EntityMapper entityMapper;
 
     @Operation(operationId = "getRoleById")
-    @GetMapping("{id}/")
+    @GetMapping("{id}")
     public RoleDisplayDto getById(@PathVariable Long id) {
         return this.entityMapper.roleToRoleDisplayDto(this.roleService.findOrThrow(id));
     }
 
-    @PostMapping("{scope}/create/")
+    @PostMapping("{scope}/create")
     public RoleDto createRole(@PathVariable Long scope, @RequestBody RoleDto roleDto) {
         Role role = entityMapper.roleDtoToRole(roleDto, this.scopeService.findScopeOrThrow(scope));
         return entityMapper.roleToRoleDto(this.roleService.save(role));
     }
 
-    @PostMapping("{scope}/alterOrCreate/")
+    @PostMapping("{scope}/alter-or-create")
     public RoleDto alterOrCreateRole(@PathVariable Long scope, @RequestBody RoleDto roleDto) {
         Role role = entityMapper.roleDtoToRole(roleDto, this.scopeService.findScopeOrThrow(scope));
         return entityMapper.roleToRoleDto(this.roleService.alterOrCreate(role));
     }
 
-    @DeleteMapping("delete/{id}/")
+    @DeleteMapping("delete/{id}")
     public Long deleteRole(@PathVariable Long id) {
         return this.roleService.delete(id);
     }
 
-    @PostMapping("{id}/weight/")
+    @PostMapping("{id}/weight")
     public RoleDto changeWeight(@PathVariable Long id, @RequestBody Integer weight) {
         return entityMapper.roleToRoleDto(this.roleService.changeWeight(id, weight));
     }
 
-    @PostMapping("{id}/permission/")
+    @PostMapping("{id}/permission")
     public RoleDto setPermission(@PathVariable Long id, @RequestBody PermissionDto permissionDto) {
         Permission permission = this.permissionService.findPermissionOrThrow(permissionDto.getKey());
         return entityMapper.roleToRoleDto(this.roleService.setPermission(id, permission, permissionDto.getPermissionValue()));
@@ -84,7 +84,7 @@ public class RoleController {
         return entityMapper.roleToRoleDto(role);
     }
 
-    @GetMapping("ids/")
+    @GetMapping("ids")
     public Collection<Long> getAllRoleIds() {
         return this.roleService.getAllIds().stream()
                 .map(Role::getId)

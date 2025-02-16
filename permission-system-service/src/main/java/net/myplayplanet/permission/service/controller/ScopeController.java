@@ -21,27 +21,27 @@ public class ScopeController {
     private final EntityMapper entityMapper;
 
     @Operation(operationId = "getScopeById")
-    @GetMapping("{id}/")
+    @GetMapping("{id}")
     public ScopeDto getById(@PathVariable Long id) {
         return this.entityMapper.mapScopeToScopeDto(this.scopeService.findScopeOrThrow(id));
     }
 
-    @PostMapping("getOrCreate/")
+    @PostMapping("get-or-create")
     public ScopeDto getOrCreateScope(@RequestBody ScopeDto scopeDto) {
         return this.entityMapper.mapScopeToScopeDto(this.scopeService.createOrFind(scopeDto.getName()));
     }
 
-    @PostMapping("create/{name}/")
+    @PostMapping("create/{name}")
     public ScopeDto create(@PathVariable String name) {
         return this.entityMapper.mapScopeToScopeDto(this.scopeService.create(name));
     }
 
-    @PostMapping("rename/{id}/name/{name}/")
+    @PostMapping("rename/{id}/name/{name}")
     public ScopeDto rename(@PathVariable Long id, @PathVariable String name) {
         return this.entityMapper.mapScopeToScopeDto(this.scopeService.rename(id, name));
     }
 
-    @DeleteMapping("{id}/")
+    @DeleteMapping("{id}")
     public ScopeDto delete(@PathVariable Long id) {
         ScopeDto scopeDto = this.entityMapper.
                 mapScopeToScopeDto(this.scopeService.findScopeOrThrow(id));
@@ -50,13 +50,13 @@ public class ScopeController {
     }
 
     @Operation(operationId = "getAllScopeIds")
-    @GetMapping("all/id/")
+    @GetMapping("all/id")
     public Set<Long> getAllScopeIds() {
         return this.scopeService.getAllIds();
     }
 
     @Operation(operationId = "getAllScopes")
-    @GetMapping("all/")
+    @GetMapping("all")
     public Set<ScopeDto> getAll() {
         return this.entityMapper.mapScopesToScopeDtos(this.scopeService.getAll());
     }

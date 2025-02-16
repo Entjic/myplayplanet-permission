@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @Operation(operationId = "getAllUsersByScope")
-    @GetMapping("{scope}/all/")
+    @GetMapping("{scope}/all")
     public Set<UserDto> getAll(@PathVariable Long scope) {
         return this.entityMapper.usersToUserDtos(this.userService.getAll(
                 this.scopeService.findScopeOrThrow(scope)));
