@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/permission/")
+@RequestMapping("/api/v1/permission")
 @Tag(name = "Permission")
 public class PermissionController {
 
@@ -105,7 +105,7 @@ public class PermissionController {
 
 
     @Operation(summary = "Fetches all existing permissions in a scope.", operationId = "getAllPermissionsByScope")
-    @GetMapping("{scope}")
+    @GetMapping("scope/{scope}")
     public Set<String> getAllPermissionsByScope(@PathVariable Long scope) {
         return this.permissionService.getAllByScope(scope).stream().map(Permission::getKey).collect(Collectors.toSet());
     }
