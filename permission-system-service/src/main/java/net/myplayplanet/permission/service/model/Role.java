@@ -34,10 +34,10 @@ public class Role {
     @Column
     private Integer weight; // Higher weight corresponds to overriding lower value permissions
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Permission> granted;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Permission> denied;
 
     @Column(nullable = false)

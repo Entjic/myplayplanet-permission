@@ -35,13 +35,13 @@ public class User {
     @ManyToOne
     private Scope scope;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Permission> granted = new HashSet<>();
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Permission> denied = new HashSet<>();
 
     public User(UUID uuid, Scope scope) {
