@@ -64,6 +64,7 @@ public interface EntityMapper {
         roleDto.setWeight(role.getWeight());
         roleDto.setPermissions(permissions);
         roleDto.setDescription(role.getDescription());
+        roleDto.setEditable(role.getEditable());
 
         return roleDto;
     }
