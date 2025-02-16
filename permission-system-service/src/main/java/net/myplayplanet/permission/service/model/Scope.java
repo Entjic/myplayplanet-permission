@@ -27,7 +27,7 @@ public class Scope {
     @Column
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "scope_permissions",
             joinColumns = @JoinColumn(name = "scope_id"),
             inverseJoinColumns = @JoinColumn(name = "permissions_uuid"))
