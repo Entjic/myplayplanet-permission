@@ -100,5 +100,28 @@ public class UserController {
         return this.entityMapper.userToUserDto(this.userService.clearUserSpecificPermissions(user));
     }
 
+    @DeleteMapping("{scope}/user/{uuid}")
+    public UserDto deleteUserFromScope(@PathVariable Long scope, @PathVariable UUID uuid) {
+        User user = this.userService.findUserOrThrow(this.scopeService.findScopeOrThrow(scope), uuid);
+        this.userService.delete(user);
+        return this.entityMapper.userToUserDto(user);
+    }
+
+    @GetMapping("{scope}/weight/user/{uuid}")
+    public Integer getWeight(@PathVariable final Long scope,
+                             @PathVariable final UUID uuid) {
+        User user = this.userService.findUserOrThrow(this.scopeService.findScopeOrThrow(scope), uuid);
+
+        return user.getRoles().stream()
+                .map(Role::getWeight)
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
+
+    @GetMapping("{scope}/user/{uuid}/known")
+    public Boolean isKnown(@PathVariable final Long scope, @PathVariable UUID uuid) {
+        return this.userService.findUser(this.scopeService.findScopeOrThrow(scope), uuid).isPresent();
+    }
+
 
 }

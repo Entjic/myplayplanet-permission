@@ -35,6 +35,10 @@ public class UserService {
         return this.userRepository.findByScopeAndUuid(scope, uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    public Optional<User> findUser(Scope scope, UUID uuid) {
+        return this.userRepository.findByScopeAndUuid(scope, uuid);
+    }
+
     public User findOrCreateUser(Scope scope, UUID uuid) {
         return this.userRepository.findByScopeAndUuid(scope, uuid).orElse(new User(uuid, scope));
     }
@@ -67,6 +71,10 @@ public class UserService {
             user.getDenied().remove(permission);
         }
         return userRepository.save(user);
+    }
+
+    public void delete(User user) {
+        this.userRepository.delete(user);
     }
 
     public User clearUserSpecificPermissions(User user) {

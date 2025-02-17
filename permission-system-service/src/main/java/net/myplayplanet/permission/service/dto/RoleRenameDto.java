@@ -7,12 +7,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class RoleDisplayDto {
+public class RoleRenameDto {
 
     private Long id;
-    private Long scope;
-    private String name;
-    private String description;
-    private Integer weight;
+    private String name, description;
 
 }

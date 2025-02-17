@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.myplayplanet.permission.service.dto.PermissionDto;
+import net.myplayplanet.permission.service.dto.RoleRenameDto;
 import net.myplayplanet.permission.service.dto.effective.ExtensivePermissionDto;
 import net.myplayplanet.permission.service.dto.enums.PermissionOrigin;
 import net.myplayplanet.permission.service.dto.enums.PermissionValue;
@@ -16,11 +17,13 @@ import net.myplayplanet.permission.service.model.Scope;
 import net.myplayplanet.permission.service.repository.RoleRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Transactional
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,7 @@ public class RoleService {
 
     private final EntityMapper entityMapper;
     private final RoleRepository roleRepository;
+    private final RolePermissionFixService rolePermissionFixService;
 
     public Role findOrThrow(Long id) {
         return roleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -59,33 +63,42 @@ public class RoleService {
                 .findFirst();
     }
 
+    public Role saveAndFixPermissionReferences(Role role) {
+
+        this.rolePermissionFixService.fixPermissions(role);
+        return save(role);
+    }
+
     public Role save(Role role) {
         if (isInvalid(role)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The role has the same permission set as GRANTED and DENIED at the same time. The first offender is: " + findFirstInvalid(role));
         }
         return this.roleRepository.save(role);
+
     }
 
     public Role createFromExisting(String name, String description, Integer weight, Role template) {
         Role role = new Role(template.getScope(), name, weight, template.getGranted(), template.getDenied());
         role.setDescription(description);
-        return this.save(role);
+        return this.saveAndFixPermissionReferences(role);
     }
 
     public Role alterOrCreate(Role role) {
+
+        log.info("Alter or create for role {}", role);
+
         if (role.getId() == null) {
             Optional<Role> existing = this.getByNameOptional(role.getScope(), role.getName());
-            return existing.map(value -> alter(value, role)).orElseGet(() -> save(role));
+            return existing.map(value -> alter(value, role)).orElseGet(() -> saveAndFixPermissionReferences(role));
         }
         Optional<Role> byId = this.roleRepository.findById(role.getId());
-        if (byId.isEmpty()) return save(role);
+        if (byId.isEmpty()) return saveAndFixPermissionReferences(role);
         Role current = byId.get();
         log.info("Overriding role {} with {}", current, role);
         return alter(current, role);
     }
 
     private Role alter(Role current, Role alter) {
-        current.setWeight(alter.getWeight());
 
         for (final Permission permission : alter.getGranted()) {
             setPermission(current, permission, PermissionValue.GRANTED);
@@ -96,8 +109,11 @@ public class RoleService {
         }
 
         current.setName(alter.getName());
+        current.setDescription(alter.getDescription());
         current.setEditable(alter.getEditable());
         current.setScope(alter.getScope());
+        current.setWeight(alter.getWeight());
+
         return this.roleRepository.save(current);
 
     }
@@ -122,13 +138,13 @@ public class RoleService {
     public Role changeWeight(long id, int weight) {
         Role role = this.findOrThrow(id);
         role.setWeight(weight);
-        return this.save(role);
+        return this.saveAndFixPermissionReferences(role);
     }
 
     public Role setPermission(long id, Permission permission, PermissionValue permissionValue) {
         Role role = this.findOrThrow(id);
         this.setPermission(role, permission, permissionValue);
-        return this.save(role);
+        return this.saveAndFixPermissionReferences(role);
     }
 
     private void setPermission(Role role, Permission permission, PermissionValue permissionValue) {
@@ -202,4 +218,12 @@ public class RoleService {
         return roles;
     }
 
+    public Role rename(final Role role, RoleRenameDto roleRenameDto) {
+
+        role.setName(roleRenameDto.getName());
+        role.setDescription(roleRenameDto.getDescription());
+
+        return this.save(role);
+
+    }
 }

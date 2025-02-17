@@ -127,6 +127,7 @@ public interface EntityMapper {
 
     Set<ScopeDto> mapScopesToScopeDtos(Collection<Scope> scopes);
 
+    @Mapping(source = "role.scope.id", target = "scope")
     RoleDisplayDto roleToRoleDisplayDto(Role role);
 
     Set<RoleDisplayDto> rolesToRoleDisplayDto(Collection<Role> roles);

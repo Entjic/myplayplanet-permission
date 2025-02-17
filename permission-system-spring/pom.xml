@@ -47,6 +47,10 @@
             <artifactId>spring-boot-starter-webflux</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>net.myplayplanet</groupId>
+            <artifactId>security</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 public class OpenApiGeneratorTest {
-
+    // TODO: 17.02.2025 user random port and inject and runtime
     private static final String API_DOCS_URL = "http://localhost:8080/v3/api-docs";
     private static final String OUTPUT_PATH = "target/generated/openapi.json";
 

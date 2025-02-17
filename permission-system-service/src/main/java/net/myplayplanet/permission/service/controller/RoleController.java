@@ -3,12 +3,15 @@ package net.myplayplanet.permission.service.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.myplayplanet.permission.service.dto.PermissionDto;
 import net.myplayplanet.permission.service.dto.RoleDisplayDto;
 import net.myplayplanet.permission.service.dto.RoleDto;
+import net.myplayplanet.permission.service.dto.RoleRenameDto;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;
+import net.myplayplanet.permission.service.model.Scope;
 import net.myplayplanet.permission.service.service.PermissionService;
 import net.myplayplanet.permission.service.service.RoleService;
 import net.myplayplanet.permission.service.service.ScopeService;
@@ -19,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/role/")
@@ -39,7 +43,7 @@ public class RoleController {
     @PostMapping("{scope}")
     public RoleDto createRole(@PathVariable Long scope, @RequestBody RoleDto roleDto) {
         Role role = entityMapper.roleDtoToRole(roleDto, this.scopeService.findScopeOrThrow(scope));
-        return entityMapper.roleToRoleDto(this.roleService.save(role));
+        return entityMapper.roleToRoleDto(this.roleService.saveAndFixPermissionReferences(role));
     }
 
     @PostMapping("copy/{id}")
@@ -55,13 +59,33 @@ public class RoleController {
     @PutMapping("{scope}")
     @Operation(summary = "Update or create an existing role of a scope.", description = "This endpoint is used to update an already existing role inside a scope. If the role does not exist it will be created.")
     public RoleDto updateRole(@PathVariable Long scope, @RequestBody RoleDto roleDto) {
+
+        log.info("Role DTO in endpoint {}", roleDto);
+
         Role role = entityMapper.roleDtoToRole(roleDto, this.scopeService.findScopeOrThrow(scope));
         return entityMapper.roleToRoleDto(this.roleService.alterOrCreate(role));
     }
 
-    @DeleteMapping("delete/{id}")
+    @PostMapping("rename")
+    public RoleDto renameRole(@RequestBody RoleRenameDto roleDto) {
+        Role renamed = this.roleService.rename(this.roleService.findOrThrow(roleDto.getId()), roleDto);
+        return entityMapper.roleToRoleDto(renamed);
+    }
+
+    @PostMapping("{scope}/create-empty")
+    public RoleDto createEmptyRole(@PathVariable Long scope, @RequestBody RoleRenameDto roleDto) {
+
+        Scope s = this.scopeService.findScopeOrThrow(scope);
+        // TODO: 17.02.2025 maybe ein anderes gewicht nehmen als 0
+        Role role = new Role(s, roleDto.getName(), 0, Set.of(), Set.of());
+        role.setDescription(roleDto.getDescription());
+
+        return this.entityMapper.roleToRoleDto(this.roleService.save(role));
+    }
+
+    @DeleteMapping("{id}")
     public RoleDto deleteRole(@PathVariable Long id) {
-        Role role =  this.roleService.delete(id);
+        Role role = this.roleService.delete(id);
         return entityMapper.roleToRoleDto(role);
     }
 

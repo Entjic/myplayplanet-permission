@@ -10,8 +10,10 @@ import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;
 import net.myplayplanet.permission.service.model.Scope;
 import net.myplayplanet.permission.service.model.User;
+import net.myplayplanet.permission.service.repository.PermissionRepository;
 import net.myplayplanet.permission.service.repository.RoleRepository;
 import net.myplayplanet.permission.service.repository.UserRepository;
+import net.myplayplanet.permission.service.service.RolePermissionFixService;
 import net.myplayplanet.permission.service.service.RoleService;
 import net.myplayplanet.permission.service.service.UserService;
 import org.junit.jupiter.api.Assertions;
@@ -46,7 +48,8 @@ public class EffectivePermissionModelTest {
     private UserService mockUserService() {
         UserRepository userRepository = Mockito.mock(UserRepository.class);
         RoleRepository roleRepository = Mockito.mock(RoleRepository.class);
-        return new UserService(userRepository, entityMapper, new RoleService(entityMapper, roleRepository));
+        PermissionRepository permissionRepository = Mockito.mock(PermissionRepository.class);
+        return new UserService(userRepository, entityMapper, new RoleService(entityMapper, roleRepository, new RolePermissionFixService(permissionRepository)));
     }
 
     @Test

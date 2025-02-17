@@ -3,7 +3,9 @@ import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;
 import net.myplayplanet.permission.service.model.Scope;
+import net.myplayplanet.permission.service.repository.PermissionRepository;
 import net.myplayplanet.permission.service.repository.RoleRepository;
+import net.myplayplanet.permission.service.service.RolePermissionFixService;
 import net.myplayplanet.permission.service.service.RoleService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -38,7 +40,8 @@ public class RoleEditTest {
     @Test
     public void insertNewValidRoleTest() {
         RoleRepository roleRepository = mock();
-        RoleService roleService = new RoleService(entityMapper, roleRepository);
+        PermissionRepository permissionRepository = mock();
+        RoleService roleService = new RoleService(entityMapper, roleRepository, new RolePermissionFixService(permissionRepository));
         Role role = validRole();
         assertDoesNotThrow(() -> roleService.save(role));
     }
@@ -46,7 +49,8 @@ public class RoleEditTest {
     @Test
     public void insertNewInvalidRoleTest() {
         RoleRepository roleRepository = mock();
-        RoleService roleService = new RoleService(entityMapper, roleRepository);
+        PermissionRepository permissionRepository = mock();
+        RoleService roleService = new RoleService(entityMapper, roleRepository, new RolePermissionFixService(permissionRepository));
 
         Role role = invalidRole();
         Assertions.assertThrows(ResponseStatusException.class, () -> roleService.save(role));

@@ -9,7 +9,7 @@ import java.util.Collection;
 
 public interface PermissionAutoRegister {
 
-    ScopeDto permissionScope();
+    String scopeName();
 
     Collection<PermissionInfoDto> permissions();
 

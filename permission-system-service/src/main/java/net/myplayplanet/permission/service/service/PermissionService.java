@@ -11,12 +11,14 @@ import net.myplayplanet.permission.service.repository.PermissionRepository;
 import net.myplayplanet.permission.service.repository.ScopeRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class PermissionService {
@@ -64,7 +66,7 @@ public class PermissionService {
 
     public Permission saveNewPermission(String key, String parent) {
         if (permissionRepository.existsByKey(key))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "There already exists a permission with the specified uuid");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "There already exists a permission with the specified key");
         return this.saveOrUpdatePermission(key, parent);
     }
 
@@ -75,7 +77,7 @@ public class PermissionService {
 
     private void assertPermissionExistsByKey(String key) {
         if (!permissionRepository.existsByKey(key))
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "There already exists a permission with the specified uuid");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "There already exists a permission with the specified key");
     }
 
     private Permission saveOrUpdatePermission(String key, String parent) {
@@ -201,6 +203,7 @@ public class PermissionService {
     public void addToScope(String key, Long scopeId) {
         Scope scope = this.scopeService.findScopeOrThrow(scopeId);
         Permission permission = this.findPermissionOrThrow(key);
+        if (scope.getPermissions().contains(permission)) return;
         scope.getPermissions().add(permission);
         this.scopeRepository.save(scope);
     }

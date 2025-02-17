@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.myplayplanet.permission.service.dto.PermissionDisplayDto;
 import net.myplayplanet.permission.service.dto.PermissionInfoDto;
 import net.myplayplanet.permission.service.dto.enums.DeletionMode;
@@ -24,6 +25,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/permission/")
@@ -47,6 +49,9 @@ public class PermissionController {
                     responseCode = "404", description = "The referenced parent does not exist."),
     })
     public PermissionInfoDto createPermission(@RequestBody PermissionInfoDto permissionInfoDto) {
+
+        log.info("creating permission with dto {}", permissionInfoDto);
+
         Permission permission = this.permissionService.saveNewPermission(permissionInfoDto.getKey(),
                 permissionInfoDto.getParent());
 
