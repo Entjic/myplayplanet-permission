@@ -75,9 +75,10 @@ import {{invokerPackage}}.auth.ApiKeyAuth;
 {{#hasOAuthMethods}}
 import {{invokerPackage}}.auth.OAuth;
 {{/hasOAuthMethods}}
+import {{markerPath}};
 
 {{>generatedAnnotation}}
-public class ApiClient{{#jsr310}} extends JavaTimeFormatter{{/jsr310}} {
+public class ApiClient{{#jsr310}} extends JavaTimeFormatter{{/jsr310}} implements {{marker}}{
 
     public enum CollectionFormat {
         CSV(","), TSV("\t"), SSV(" "), PIPES("|"), MULTI(null);

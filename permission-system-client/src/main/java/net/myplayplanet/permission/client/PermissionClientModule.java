@@ -6,7 +6,10 @@ import net.myplayplanet.di.ImplementationInterfaceRegisterModule;
 @Slf4j
 public class PermissionClientModule extends ImplementationInterfaceRegisterModule<IPermissionClient> {
 
-    private static final String packageName = "net.myplayplanet.permission.api";
+    private static final String[] packageName = new String[]{
+            "net.myplayplanet.permission.api",
+            "net.myplayplanet.permission.internal"
+    };
 
     public PermissionClientModule(final ClassLoader loader,
                                   final boolean asSingleton) {

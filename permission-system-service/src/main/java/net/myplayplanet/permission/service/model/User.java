@@ -10,17 +10,16 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.SqlTypes;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "permission_user")
+@Table(name = "permission_user", uniqueConstraints = {
+        @UniqueConstraint(name = "uc_user_uuid_scope_id", columnNames = {"uuid", "scope_id"})
+})
 public class User {
 
     @Id
@@ -35,14 +34,19 @@ public class User {
     @ManyToOne
     private Scope scope;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles = new HashSet<>();
+    @ManyToMany
+    @JoinTable(name = "permission_user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id"))
+    private Set<Role> roles = new LinkedHashSet<>();
+
 
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Permission> granted = new HashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Permission> denied = new HashSet<>();
+
 
     public User(UUID uuid, Scope scope) {
         this.uuid = uuid;

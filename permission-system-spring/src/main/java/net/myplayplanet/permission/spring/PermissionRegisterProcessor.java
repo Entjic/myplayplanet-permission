@@ -1,6 +1,5 @@
 package net.myplayplanet.permission.spring;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.myplayplanet.permission.api.PermissionClient;
@@ -10,6 +9,10 @@ import net.myplayplanet.permission.model.PermissionInfoDto;
 import net.myplayplanet.permission.model.RoleDto;
 import net.myplayplanet.permission.model.ScopeDto;
 import net.myplayplanet.services.rest.base.core.exception.CustomErrorResponse;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
@@ -21,15 +24,19 @@ import java.util.Collection;
 public class PermissionRegisterProcessor {
     private final Collection<PermissionAutoRegister> autoRegisters;
 
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    private final ScopeClient scopeClient;
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    private final PermissionClient permissionClient;
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-    private final RoleClient roleClient;
+    private ScopeClient scopeClient;
+    private PermissionClient permissionClient;
+    private RoleClient roleClient;
 
-    @PostConstruct
-    public void process() {
+    @EventListener(ApplicationReadyEvent.class)
+    public void process(ApplicationReadyEvent event) {
+
+        ApplicationContext springContext = event.getApplicationContext();
+        AutowireCapableBeanFactory factory = springContext.getAutowireCapableBeanFactory();
+        this.scopeClient = factory.createBean(ScopeClient.class);
+        this.permissionClient = factory.createBean(PermissionClient.class);
+        this.roleClient = factory.createBean(RoleClient.class);
+
         for (final PermissionAutoRegister autoRegister : autoRegisters) {
             createDefaults(autoRegister).subscribe();
         }
