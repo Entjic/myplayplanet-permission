@@ -3,14 +3,18 @@ package net.myplayplanet.permission.service.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import net.myplayplanet.permission.service.dto.CompleteUserDto;
 import net.myplayplanet.permission.service.dto.PermissionDto;
 import net.myplayplanet.permission.service.dto.RoleDisplayDto;
 import net.myplayplanet.permission.service.dto.UserDto;
 import net.myplayplanet.permission.service.dto.effective.EffectiveUserModelDto;
 import net.myplayplanet.permission.service.dto.effective.ExtensiveEffectiveUserModelDto;
+import net.myplayplanet.permission.service.dto.enums.PermissionValue;
+import net.myplayplanet.permission.service.dto.model.PermissionSet;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;
+import net.myplayplanet.permission.service.model.Scope;
 import net.myplayplanet.permission.service.model.User;
 import net.myplayplanet.permission.service.service.PermissionService;
 import net.myplayplanet.permission.service.service.RoleService;
@@ -128,6 +132,30 @@ public class UserController {
     public Set<RoleDisplayDto> getUserRoles(@PathVariable final Long scope, @PathVariable final UUID uuid) {
         User user = this.userService.findUserOrThrow(this.scopeService.findScopeOrThrow(scope), uuid);
         return entityMapper.rolesToRoleDisplayDto(user.getRoles());
+    }
+
+    @GetMapping("{scope}/user/{uuid}")
+    public CompleteUserDto getUserByScopeAndUUID(@PathVariable final Long scope, @PathVariable UUID uuid) {
+        Scope s = this.scopeService.findScopeOrThrow(scope);
+        User user = this.userService.findUserOrThrow(s, uuid);
+
+        CompleteUserDto completeUserDto = new CompleteUserDto();
+        completeUserDto.setUuid(uuid);
+
+        PermissionSet permissions = new PermissionSet(scope);
+        for (final Permission permission : s.getPermissions()) {
+
+            PermissionValue value = PermissionValue.NEUTRAL;
+            if (user.getGranted().contains(permission)) value = PermissionValue.GRANTED;
+            if (user.getDenied().contains(permission)) value = PermissionValue.DENIED;
+
+            permissions.add(permission.getKey(), value);
+
+        }
+
+        completeUserDto.setPermissions(permissions);
+        return completeUserDto;
+
     }
 
 
