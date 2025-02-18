@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import lombok.RequiredArgsConstructor;
 import net.myplayplanet.permission.api.RoleClient;
 import net.myplayplanet.permission.api.ScopeClient;
+import net.myplayplanet.permission.model.CompleteRoleDto;
 import net.myplayplanet.permission.model.RoleDisplayDto;
 import net.myplayplanet.permission.model.ScopeDto;
 import reactor.core.publisher.Mono;
@@ -51,6 +52,6 @@ public class RoleTranslator {
 
     private Mono<Tuple2<String, String>> gatherData(Long scope, Long roleId) {
         return Mono.zip(this.scopeClient.getScopeById(scope).mapNotNull(ScopeDto::getName),
-                this.roleClient.getRoleById(roleId).mapNotNull(RoleDisplayDto::getName));
+                this.roleClient.getRoleById(roleId).mapNotNull(CompleteRoleDto::getName));
     }
 }
