@@ -27,14 +27,14 @@ public class User {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "uuid", nullable = false)
+    @Column(name = "uuid", nullable = false, columnDefinition = "UUID")
     @JdbcTypeCode(SqlTypes.UUID)
     private UUID uuid;
 
     @ManyToOne
     private Scope scope;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "permission_user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id"))

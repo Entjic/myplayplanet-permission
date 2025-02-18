@@ -1,12 +1,14 @@
 package net.myplayplanet.permission.service.model;
 
 
+import com.google.common.base.MoreObjects;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,11 +36,17 @@ public class Role {
     @Column
     private Integer weight; // Higher weight corresponds to overriding lower value permissions
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Permission> granted;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "role_permissions",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "permissions_id"))
+    private Set<Permission> granted = new LinkedHashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Permission> denied;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "role_denied",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "denied_id"))
+    private Set<Permission> denied = new LinkedHashSet<>();
 
     @Column(nullable = false)
     private Boolean editable = false; // If not editable, name is a translation key, otherwise its user input freeform
@@ -52,25 +60,16 @@ public class Role {
 
     @Override
     public String toString() {
-
-        final StringBuilder stringBuilder = new StringBuilder();
-
-        stringBuilder.append("Role [").append(id).append("]")
-                .append("\n")
-                .append("weight: ").append(weight)
-                .append("\n").append("GRANTED").append("\n");
-
-        for (Permission permission : granted) {
-            stringBuilder.append(permission.toString()).append("\n");
-        }
-
-        stringBuilder.append("DENIED").append("\n");
-
-        for (Permission permission : denied) {
-            stringBuilder.append(permission.toString()).append("\n");
-        }
-
-        return stringBuilder.toString();
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("scope", scope)
+                .add("name", name)
+                .add("weight", weight)
+                .add("granted", granted)
+                .add("denied", denied)
+                .add("editable", editable)
+                .add("description", description)
+                .toString();
     }
 
     @Override

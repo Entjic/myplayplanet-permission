@@ -1,5 +1,6 @@
 package net.myplayplanet.permission.service.model;
 
+import com.google.common.base.MoreObjects;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,5 +53,14 @@ public class Scope {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("id", id)
+                .add("name", name)
+                .add("permissions", permissions)
+                .toString();
     }
 }

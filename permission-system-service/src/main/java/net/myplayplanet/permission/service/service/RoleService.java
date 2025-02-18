@@ -64,8 +64,8 @@ public class RoleService {
     }
 
     public Role saveAndFixPermissionReferences(Role role) {
-
         this.rolePermissionFixService.fixPermissions(role);
+        log.info("Saving role {}", role);
         return save(role);
     }
 

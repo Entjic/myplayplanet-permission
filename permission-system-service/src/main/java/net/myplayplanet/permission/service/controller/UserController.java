@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import net.myplayplanet.permission.service.dto.PermissionDto;
+import net.myplayplanet.permission.service.dto.RoleDisplayDto;
 import net.myplayplanet.permission.service.dto.UserDto;
 import net.myplayplanet.permission.service.dto.effective.EffectiveUserModelDto;
 import net.myplayplanet.permission.service.dto.effective.ExtensiveEffectiveUserModelDto;
@@ -121,6 +122,12 @@ public class UserController {
     @GetMapping("{scope}/user/{uuid}/known")
     public Boolean isKnown(@PathVariable final Long scope, @PathVariable UUID uuid) {
         return this.userService.findUser(this.scopeService.findScopeOrThrow(scope), uuid).isPresent();
+    }
+
+    @GetMapping("{scope}/user/{uuid}/roles")
+    public Set<RoleDisplayDto> getUserRoles(@PathVariable final Long scope, @PathVariable final UUID uuid) {
+        User user = this.userService.findUserOrThrow(this.scopeService.findScopeOrThrow(scope), uuid);
+        return entityMapper.rolesToRoleDisplayDto(user.getRoles());
     }
 
 
