@@ -10,6 +10,7 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.SqlTypes;
 
+import java.sql.Types;
 import java.util.*;
 
 @Getter
@@ -27,8 +28,8 @@ public class User {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "uuid", nullable = false, columnDefinition = "UUID")
-    @JdbcTypeCode(SqlTypes.UUID)
+    @Column(name = "uuid", nullable = false)
+    @JdbcTypeCode(Types.VARCHAR)
     private UUID uuid;
 
     @ManyToOne
