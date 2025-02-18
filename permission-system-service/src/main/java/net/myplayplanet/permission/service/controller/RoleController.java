@@ -4,10 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.myplayplanet.permission.service.dto.PermissionDto;
-import net.myplayplanet.permission.service.dto.RoleDisplayDto;
-import net.myplayplanet.permission.service.dto.RoleDto;
-import net.myplayplanet.permission.service.dto.RoleRenameDto;
+import net.myplayplanet.permission.service.dto.*;
+import net.myplayplanet.permission.service.dto.enums.PermissionValue;
+import net.myplayplanet.permission.service.dto.model.PermissionSet;
 import net.myplayplanet.permission.service.mapper.EntityMapper;
 import net.myplayplanet.permission.service.model.Permission;
 import net.myplayplanet.permission.service.model.Role;
@@ -36,8 +35,32 @@ public class RoleController {
 
     @Operation(operationId = "getRoleById")
     @GetMapping("{id}")
-    public RoleDisplayDto getById(@PathVariable Long id) {
-        return this.entityMapper.roleToRoleDisplayDto(this.roleService.findOrThrow(id));
+    public CompleteRoleDto getById(@PathVariable Long id) {
+        Role role = this.roleService.findOrThrow(id);
+
+        CompleteRoleDto completeRoleDto = new CompleteRoleDto();
+        completeRoleDto.setId(role.getId());
+        completeRoleDto.setName(role.getName());
+        completeRoleDto.setDescription(role.getDescription());
+        completeRoleDto.setScope(role.getScope());
+        completeRoleDto.setEditable(role.getEditable());
+        completeRoleDto.setWeight(role.getWeight());
+
+        PermissionSet permissions = new PermissionSet(role.getScope().getId());
+
+        for (Permission permission : role.getScope().getPermissions()) {
+
+            PermissionValue permissionValue = PermissionValue.NEUTRAL;
+            if (role.getGranted().contains(permission)) permissionValue = PermissionValue.GRANTED;
+            if (role.getDenied().contains(permission)) permissionValue = PermissionValue.DENIED;
+
+            permissions.add(permission.getKey(), permissionValue);
+        }
+
+        completeRoleDto.setPermissions(permissions);
+
+        return completeRoleDto;
+
     }
 
     @PostMapping("{scope}")
