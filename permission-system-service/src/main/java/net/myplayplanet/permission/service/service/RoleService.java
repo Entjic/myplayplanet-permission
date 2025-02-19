@@ -226,4 +226,19 @@ public class RoleService {
         return this.save(role);
 
     }
+
+    public Set<Role> sort(final List<Role> roles) {
+
+        Set<Role> out = new HashSet<>();
+
+        int weight = 1;
+
+        for (final Role role : roles) {
+            role.setWeight(weight++);
+            out.add(this.saveAndFixPermissionReferences(role));
+        }
+
+        return out;
+
+    }
 }

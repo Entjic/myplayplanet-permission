@@ -17,6 +17,7 @@ import net.myplayplanet.permission.service.service.ScopeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -156,6 +157,15 @@ public class RoleController {
         return this.roleService.getAllIds().stream()
                 .map(Role::getId)
                 .collect(Collectors.toSet());
+    }
+
+    @PostMapping("sort")
+    public Set<RoleDisplayDto> sort(@RequestBody List<Long> roles) {
+
+        Set<Role> weighted = this.roleService.sort(roles.stream().map(this.roleService::findOrThrow).toList());
+
+        return this.entityMapper.rolesToRoleDisplayDto(weighted);
+
     }
 
 }
