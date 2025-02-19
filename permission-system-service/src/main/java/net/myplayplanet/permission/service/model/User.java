@@ -41,13 +41,17 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "roles_id"))
     private Set<Role> roles = new LinkedHashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "permission_user_granted",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "granted_id"))
+    private Set<Permission> granted = new LinkedHashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Permission> granted = new HashSet<>();
-
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<Permission> denied = new HashSet<>();
-
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "permission_user_denied",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "denied_id"))
+    private Set<Permission> denied = new LinkedHashSet<>();
 
     public User(UUID uuid, Scope scope) {
         this.uuid = uuid;
