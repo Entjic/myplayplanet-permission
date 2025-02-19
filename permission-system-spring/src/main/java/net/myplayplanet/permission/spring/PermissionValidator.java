@@ -41,4 +41,8 @@ public class PermissionValidator {
         this.assertPermissionAsync(user, type, scope).block();
     }
 
+    public Mono<Boolean> assertPermissionAsyncNonThrowing(UUID user, PermissionType type, Long scope) {
+        return this.permissionClient.hasPermission(scope, user, type.permissionKey());
+    }
+
 }

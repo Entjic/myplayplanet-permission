@@ -37,15 +37,15 @@ public class Role {
     private Integer weight; // Higher weight corresponds to overriding lower value permissions
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "role_permissions",
+    @JoinTable(name = "role_granted",
             joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "permissions_id"))
+            inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private Set<Permission> granted = new LinkedHashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "role_denied",
             joinColumns = @JoinColumn(name = "role_id"),
-            inverseJoinColumns = @JoinColumn(name = "denied_id"))
+            inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private Set<Permission> denied = new LinkedHashSet<>();
 
     @Column(nullable = false)
