@@ -47,8 +47,14 @@ public abstract class AbstractPermissionController {
                     if (!aBoolean)
                         return Mono.error(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Missing read permissions!"));
                     return Mono.just(scope);
-                }).flatMap(this.roleClient::getAllRolesByScope);
+                }).flatMap(this.roleClient::getAllRolesByScope)
+                .flatMap(this::postGetAllRolesByScope);
     }
+
+    protected Mono<RoleDto> postGetAllRolesByScope(RoleDto roleDto) {
+        return Mono.just(roleDto);
+    }
+
 
     @Authenticated
     @GetMapping("{roleId}")
@@ -59,7 +65,12 @@ public abstract class AbstractPermissionController {
                             if (!aBoolean)
                                 return Mono.error(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Missing read permission!"));
                             return Mono.just(completeRoleDto);
-                        }));
+                        }))
+                .flatMap(this::postGetRoleById);
+    }
+
+    protected Mono<CompleteRoleDto> postGetRoleById(CompleteRoleDto roleDto) {
+        return Mono.just(roleDto);
     }
 
     @Authenticated
@@ -73,7 +84,12 @@ public abstract class AbstractPermissionController {
                     if (!aBoolean)
                         return Mono.error(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Missing edit permission!"));
                     return Mono.just(roleDto);
-                }).flatMap(this.roleClient::renameRole);
+                }).flatMap(this.roleClient::renameRole)
+                .flatMap(result -> this.postRenameRole(self, roleDto, result));
+    }
+
+    protected Mono<RoleDto> postRenameRole(UUID self, RoleRenameDto renameDto, RoleDto result) {
+        return Mono.just(result);
     }
 
     @Authenticated
@@ -85,7 +101,12 @@ public abstract class AbstractPermissionController {
                         return Mono.error(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Missing edit permission!"));
                     return Mono.just(roleDto);
                 })
-                .flatMap(roleRenameDto -> this.getRoleClient().createEmptyRole(scope, roleDto));
+                .flatMap(roleRenameDto -> this.getRoleClient().createEmptyRole(scope, roleDto))
+                .flatMap(this::postCreateEmptyRole);
+    }
+
+    protected Mono<RoleDto> postCreateEmptyRole(RoleDto roleDto) {
+        return Mono.just(roleDto);
     }
 
     @Authenticated
@@ -99,7 +120,12 @@ public abstract class AbstractPermissionController {
                         return Mono.error(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "Missing edit permission!"));
                     return Mono.just(id);
                 })
-                .flatMap(this.roleClient::deleteRole);
+                .flatMap(this.roleClient::deleteRole)
+                .flatMap(this::postDeleteRole);
+    }
+
+    protected Mono<RoleDto> postDeleteRole(RoleDto roleDto) {
+        return Mono.just(roleDto);
     }
 
     @Authenticated
@@ -110,7 +136,12 @@ public abstract class AbstractPermissionController {
                 .flatMap(aBoolean -> {
                     if (!aBoolean) return Mono.error(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
                     return Mono.just(roles);
-                }).flatMapMany(this.roleClient::sort);
+                }).flatMapMany(this.roleClient::sort)
+                .flatMap(this::postSort);
+    }
+
+    protected Mono<RoleDisplayDto> postSort(RoleDisplayDto roleDto) {
+        return Mono.just(roleDto);
     }
 
     protected abstract Mono<Boolean> hasEditRolePermission(UUID uuid, Long scope);
@@ -123,7 +154,12 @@ public abstract class AbstractPermissionController {
     // TODO: 17.02.2025 maybe maybe we also want authentication here
     @GetMapping("user/{scope}")
     public Flux<UserDto> getUsersByScope(@PathVariable Long scope) {
-        return this.userClient.getAllUsersByScope(scope);
+        return this.userClient.getAllUsersByScope(scope)
+                .flatMap(userDto -> this.postGetUserByScope(scope, userDto));
+    }
+
+    protected Mono<UserDto> postGetUserByScope(Long scope, UserDto result) {
+        return Mono.just(result);
     }
 
 
@@ -132,7 +168,12 @@ public abstract class AbstractPermissionController {
     public Mono<UserDto> addRoleToUser(@AuthenticatedSelf(IdentityType.MINECRAFT_UUID) UUID self, @PathVariable Long scope, @PathVariable UUID uuid, @PathVariable Long roleId) {
         return validateUserHasUserSetRolePermission(self, scope, roleId).then(Mono.just(uuid))
                 .flatMap(target -> validateTargetUserExistsInScope(scope, target, roleId))
-                .flatMap(aLong -> this.getUserClient().addRole(scope, uuid, aLong));
+                .flatMap(aLong -> this.getUserClient().addRole(scope, uuid, aLong))
+                .flatMap(userDto -> this.postAddRoleToUser(self, scope, uuid, roleId, userDto));
+    }
+
+    protected Mono<UserDto> postAddRoleToUser(UUID self, Long scope, UUID target, Long roleId, UserDto result) {
+        return Mono.just(result);
     }
 
     // roleId is target role, if target role is higher than own role throw error
@@ -190,7 +231,7 @@ public abstract class AbstractPermissionController {
 
     @Authenticated
     @PostMapping("user/{scope}/role/remove/{roleId}/user/{uuid}")
-    public Mono<UserDto> removeRole(@AuthenticatedSelf(IdentityType.MINECRAFT_UUID) UUID self, @PathVariable Long scope, @PathVariable UUID uuid, @PathVariable Long roleId) {
+    public Mono<UserDto> removeRoleFromUser(@AuthenticatedSelf(IdentityType.MINECRAFT_UUID) UUID self, @PathVariable Long scope, @PathVariable UUID uuid, @PathVariable Long roleId) {
         return this.validateTargetUserExistsInScope(scope, uuid, roleId)
                 .flatMap(id -> this.validateUserHasUserSetRolePermission(self, scope, roleId).then(Mono.just(id)))
                 .flatMap(aLong -> this.getUserClient().removeRole(scope, uuid, aLong));
@@ -201,7 +242,17 @@ public abstract class AbstractPermissionController {
         return this.findHighestRank(scope, uuid)
                 .flatMap(roleId -> this.validateUserHasUserEditPermissions(self, scope, roleId))
                 .then(Mono.just(uuid))
-                .flatMap(unused -> this.userClient.setUserSpecificPermission(scope, uuid, permissionDto));
+                .flatMap(unused -> this.userClient.setUserSpecificPermission(scope, uuid, permissionDto))
+                .flatMap(userDto -> this.postSetUserSpecificPermission(self, scope, uuid, permissionDto, userDto));
+    }
+
+    protected Mono<UserDto> postSetUserSpecificPermission(UUID self, Long scope, UUID target, PermissionDto permission, UserDto result) {
+        return Mono.just(result);
+    }
+
+    @GetMapping("user/{scope}/user/{uuid}/highest")
+    public Mono<Long> findHighestUserRank(@PathVariable Long scope, @PathVariable UUID uuid) {
+        return this.findHighestRank(scope, uuid);
     }
 
     private Mono<Long> findHighestRank(Long scope, UUID user) {
@@ -223,7 +274,12 @@ public abstract class AbstractPermissionController {
         return this.findHighestRank(scope, uuid)
                 .flatMap(aLong -> this.validateUserHasUserEditPermissions(self, scope, aLong))
                 .then(Mono.just(uuid))
-                .flatMap(unused -> this.userClient.setUserSpecificPermissions(scope, uuid, permissionDtos));
+                .flatMap(unused -> this.userClient.setUserSpecificPermissions(scope, uuid, permissionDtos))
+                .flatMap(result -> this.postSetUserSpecificPermissions(self, scope, uuid, permissionDtos, result));
+    }
+
+    protected Mono<UserDto> postSetUserSpecificPermissions(UUID self, Long scope, UUID target, Set<PermissionDto> permissionDtos, UserDto result) {
+        return Mono.just(result);
     }
 
     @DeleteMapping("user/{scope}/user/{uuid}")
