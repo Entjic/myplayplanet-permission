@@ -22,6 +22,30 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>clone-openapi-templates</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>git</executable>
+                            <arguments>
+                                <argument>clone</argument>
+                                <argument>https://gitlab.com/MyPlayPlanet/projects/api/java-client-templates.git
+                                </argument>
+                                <argument>${project.build.directory}/openapi-templates/</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
 
             <plugin>
                 <groupId>org.openapitools</groupId>
@@ -55,9 +79,9 @@
                                 <developerOrganizationUrl>myplayplanet.net</developerOrganizationUrl>
                             </configOptions>
                             <additionalProperties>
-                                marker=IPermissionClient,markerPath=net.myplayplanet.permission.client.IPermissionClient
+                                marker=IPermissionClient,markerPath=net.myplayplanet.permission.client.IPermissionClient,baseUrl=permissionServiceBaseUrl
                             </additionalProperties>
-                            <templateDirectory>src/main/resources/template/</templateDirectory>
+                            <templateDirectory>${project.build.directory}/openapi-templates/template</templateDirectory>
                             <library>webclient</library>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <apiNameSuffix>Client</apiNameSuffix>
