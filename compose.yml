@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+
+  permission-service:
+    image: registry.gitlab.com/myplayplanet/registry-dev/permission-system-service
+    container_name: permission-service
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: "local"
+
+
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: admin # Change this to a secure password
+      MARIADB_DATABASE: permission  # Default database
+      MARIADB_USER: paul  # Change this if needed
+      MARIADB_PASSWORD: admin  # Change this to a secure password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: admin
+    ports:
+      - "8888:80"
+    depends_on:
+      - mariadb
+
+volumes:
+  mariadb_data:
+

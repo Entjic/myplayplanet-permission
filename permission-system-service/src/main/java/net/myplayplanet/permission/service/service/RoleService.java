@@ -57,6 +57,7 @@ public class RoleService {
     }
 
     public Optional<Role> getByNameOptional(Scope scope, String name) {
+        log.info("Searching role by name {} in scope {}", name, scope);
         return this.roleRepository.findAllByScope(scope)
                 .stream()
                 .filter(role -> role.getName().equalsIgnoreCase(name))
@@ -89,6 +90,7 @@ public class RoleService {
 
         if (role.getId() == null) {
             Optional<Role> existing = this.getByNameOptional(role.getScope(), role.getName());
+            log.info("Role exists? {}", existing.isPresent());
             return existing.map(value -> alter(value, role)).orElseGet(() -> saveAndFixPermissionReferences(role));
         }
         Optional<Role> byId = this.roleRepository.findById(role.getId());
@@ -113,7 +115,7 @@ public class RoleService {
         current.setEditable(alter.getEditable());
         current.setScope(alter.getScope());
         current.setWeight(alter.getWeight());
-
+        log.info("Exiting alter, just about to save role {}", current);
         return this.roleRepository.save(current);
 
     }

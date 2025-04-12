@@ -15,7 +15,6 @@ import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = PermissionSystemApplication.class) // Starts a minimal server
-@AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 public class UserRoleTest {
 

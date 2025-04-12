@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import net.myplayplanet.permission.service.dto.ScopeDto;
 import net.myplayplanet.permission.service.model.Scope;
 import net.myplayplanet.permission.service.repository.ScopeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -17,12 +19,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ScopeService {
 
+    private static final Logger log = LoggerFactory.getLogger(ScopeService.class);
     private final ScopeRepository scopeRepository;
 
     public Scope findScopeOrThrow(Long id) {
+        log.info("Searching for scope {}", id);
         return this.scopeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "No scope with id " + id + " found."));
+                .orElseThrow(() -> {
+                    log.warn("Failed to find scope with id {}", id);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            "No scope with id " + id + " found.");
+                });
     }
 
     public Set<Long> getAllIds() {

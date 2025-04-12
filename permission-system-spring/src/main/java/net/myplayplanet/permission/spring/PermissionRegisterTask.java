@@ -57,10 +57,9 @@ public class PermissionRegisterTask {
                         return Mono.just(permission);
                     return Mono.error(throwable);
                 })
-                .flatMap(permissionInfoDto -> this.permissionClient.addPermissionToScope(permissionInfoDto.getKey(), scope).then(Mono.just(permissionInfoDto)))
-                .doOnSuccess(permissionInfoDto -> {
-                    log.info("Initialized permission {}", permissionInfoDto);
-                });
+                .flatMap(permissionInfoDto -> this.permissionClient.addPermissionToScope(permissionInfoDto.getKey(), scope)
+                        .then(Mono.just(permissionInfoDto)))
+                .doOnSuccess(permissionInfoDto -> log.info("Initialized permission {}", permissionInfoDto));
 
     }
 

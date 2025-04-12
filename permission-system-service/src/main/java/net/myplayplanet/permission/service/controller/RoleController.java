@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -161,11 +162,8 @@ public class RoleController {
 
     @PostMapping("sort")
     public Set<RoleDisplayDto> sort(@RequestBody List<Long> roles) {
-
         Set<Role> weighted = this.roleService.sort(roles.stream().map(this.roleService::findOrThrow).toList());
-
         return this.entityMapper.rolesToRoleDisplayDto(weighted);
-
     }
 
 }
