@@ -23,6 +23,21 @@
             </plugin>
 
             <plugin>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.3.1</version> <!-- or whatever you're using -->
+                <executions>
+                    <execution>
+                        <id>custom-clean</id>
+                        <phase>initialize</phase> <!-- or validate, or process-resources -->
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
