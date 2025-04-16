@@ -91,6 +91,7 @@
                                 <developerEmail>dev@myplayplanet.net</developerEmail>
                                 <developerOrganization>MyPlayPlanet</developerOrganization>
                                 <developerOrganizationUrl>myplayplanet.net</developerOrganizationUrl>
+                                <additionalModelTypeAnnotations>@lombok.AllArgsConstructor</additionalModelTypeAnnotations>
                             </configOptions>
                             <additionalProperties>
                                 marker=IPermissionClient,markerPath=net.myplayplanet.permission.client.IPermissionClient,baseUrl=permissionServiceBaseUrl
@@ -99,6 +100,7 @@
                             <library>webclient</library>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <apiNameSuffix>Client</apiNameSuffix>
+
                         </configuration>
                     </execution>
                 </executions>
