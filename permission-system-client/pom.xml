@@ -37,8 +37,7 @@
                             <executable>git</executable>
                             <arguments>
                                 <argument>clone</argument>
-                                <argument>https://gitlab.com/MyPlayPlanet/projects/api/java-client-templates.git
-                                </argument>
+                                <argument>https://github.com/Entjic/java-client-template.git</argument>
                                 <argument>${project.build.directory}/openapi-templates/</argument>
                             </arguments>
                         </configuration>
